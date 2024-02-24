@@ -78,113 +78,31 @@
 			</div>
 			<!-- banner end -->
 			
-			<!-- events -->
-			<div class="event" id="event">
-				<div class="container">
-					<div class="row">
-						<div class="col-md-4 col-sm-4">
-							<!-- event item -->
-							<div class="event-item">
-								<!-- image -->
-								<img class="img-responsive" src="img/event/1.jpg" alt="Events" />
-								<!-- heading -->
-								<h4><a href="#">이력서 등록</a></h4>
-								<!-- sub text -->
-								<span class="sub-text">Integrating technology and software solutions.</span>
-								<!-- paragraph -->
-								<p>It is our belief that in order to be most efficient it requires adaptive technology and software solutions.</p>
-							</div>
-						</div>
-						<div class="col-md-4 col-sm-4">
-							<!-- event item -->
-							<div class="event-item">
-								<!-- image -->
-								<img class="img-responsive" src="img/event/2.jpg" alt="Events" />
-								<!-- heading -->
-								<h4><a href="#">Top Company 채용관</a></h4>
-								<!-- sub text -->
-								<span class="sub-text">Integrating technology and software solutions.</span>
-								<!-- paragraph -->
-								<p>It is our belief that in order to be most efficient it requires adaptive technology and software solutions.</p>
-							</div>
-						</div>
-						<div class="col-md-4 col-sm-4">
-							<!-- event item -->
-							<div class="event-item">
-								<!-- image -->
-								<img class="img-responsive" src="img/event/3.jpg" alt="Events" />
-								<!-- heading -->
-								<h4><a href="#">기업 리뷰</a></h4>
-								<!-- sub text -->
-								<span class="sub-text">Integrating technology and software solutions.</span>
-								<!-- paragraph -->
-								<p>It is our belief that in order to be most efficient it requires adaptive technology and software solutions.</p>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-			<!-- events end -->
-
 			
 			<!-- team -->
 			<div class="team" id="team">
 				<div class="container">
-					<div class="default-heading">
-						<!-- heading -->
-						<h2>추천 명함</h2>
-					</div>
 					<div class="row">
-						<div class="col-md-3 col-sm-3">
+						<div class="col-md-6 col-sm-6">
 							<!-- team member -->
 							<div class="member">
+								<div class="default-heading">
+									<h2>이력서 작성</h2>
+								</div>
 								<!-- images -->
-								<img class="img-responsive" src="img/team/1.jpg" alt="Team Member" />
-								<!-- heading -->
-								<h3>Adam Miser</h3>
-								<!-- designation -->
-								<span class="dig">CEO</span>
-								<!-- email -->
-								<a href="#">executive.member@bloger.com</a>
+								<a href="#"><img class="img-responsive" src="img/team/1.jpg" alt="Team Member" /></a>
+								<!-- <span class="dig">CEO</span>
+								<a href="#">executive.member@bloger.com</a> -->
 							</div>
 						</div>
-						<div class="col-md-3 col-sm-3">
+						<div class="col-md-6 col-sm-6">
 							<!-- team member -->
 							<div class="member">
+								<div class="default-heading">
+									<h2>로그인</h2>
+								</div>
 								<!-- images -->
-								<img class="img-responsive" src="img/team/2.jpg" alt="Team Member" />
-								<!-- heading -->
-								<h3>Adam Miser</h3>
-								<!-- designation -->
-								<span class="dig">CEO</span>
-								<!-- email -->
-								<a href="#">executive.member@bloger.com</a>
-							</div>
-						</div>
-						<div class="col-md-3 col-sm-3">
-							<!-- team member -->
-							<div class="member">
-								<!-- images -->
-								<img class="img-responsive" src="img/team/1.jpg" alt="Team Member" />
-								<!-- heading -->
-								<h3>Adam Miser</h3>
-								<!-- designation -->
-								<span class="dig">CEO</span>
-								<!-- email -->
-								<a href="#">executive.member@bloger.com</a>
-							</div>
-						</div>
-						<div class="col-md-3 col-sm-3">
-							<!-- team member -->
-							<div class="member">
-								<!-- images -->
-								<img class="img-responsive" src="img/team/2.jpg" alt="Team Member" />
-								<!-- heading -->
-								<h3>Adam Miser</h3>
-								<!-- designation -->
-								<span class="dig">CEO</span>
-								<!-- email -->
-								<a href="#">executive.member@bloger.com</a>
+								<a href="#"><img class="img-responsive" src="img/team/2.jpg" alt="Team Member" /></a>
 							</div>
 						</div>
 					</div>

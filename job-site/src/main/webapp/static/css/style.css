@@ -159,6 +159,7 @@ header .navbar-brand img {
 	margin-bottom: 10px;
 }
 .default-heading h2{
+	text-align: center;
 	margin-top: 0;
 	font-size: 30px;
 	color: #e47133;
