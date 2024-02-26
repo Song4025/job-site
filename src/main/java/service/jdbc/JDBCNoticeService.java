@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import entity.Card;
+import entity.Files;
 
 @Service
 public class JDBCNoticeService {
@@ -99,10 +100,22 @@ public class JDBCNoticeService {
 //		return count;
 //	}
 //
-	public int insert(Card card) throws ClassNotFoundException, SQLException {
+	public int insert(Card card, Files files) throws ClassNotFoundException, SQLException {
+		String cardId = card.getTitle();
+		String userName = card.getTitle();
+		int age = card.getAge();
+		int phone = card.getPhone();
+		String position = card.getPosition();
+		String pub = card.getPub_yn();
+		String jobState = card.getJob_state();
+		String url = card.getUrl();
 		String title = card.getTitle();
-		String writerId = card.getWriter_id();
-		String content = card.getContent();
+		Date regDate = card.getReg_date();
+		String fileId = files.getFile_id();
+		String path = files.getPath();
+		String contentType = files.getContent_type();
+		Date updateDate = files.getUpdate_date();
+		
 		//String files = notice.getFiles();
 
 		String sql = "INSERT INTO notice (" + "    title," + "    writer_id," + "    content," + "    files"
@@ -113,7 +126,7 @@ public class JDBCNoticeService {
 		st.setString(1, title);
 		st.setString(2, writerId);
 		st.setString(3, content);
-		//st.setString(4, files);
+		st.setString(4, files);
 
 		int result = st.executeUpdate();
 		st.close();
