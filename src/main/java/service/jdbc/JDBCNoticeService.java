@@ -50,7 +50,7 @@ public class JDBCNoticeService {
 		List<Card> list = new ArrayList<Card>();
 
 		while (rs.next()) {
-			String id = rs.getString("CARD_ID");
+			String cardId = rs.getString("CARD_ID");
 			String title = rs.getString("TITLE");
 			String userName = rs.getString("USER_NAME");
 			int age = rs.getInt("AGE");
@@ -66,7 +66,7 @@ public class JDBCNoticeService {
 		    }
 			String jobState = rs.getString("JOB_STATE");
 			
-			Card card = new Card(id, title, userName, age, phone, position, url, regDate, hit, pub, jobState);
+			Card card = new Card(cardId, title, userName, age, phone, position, url, regDate, hit, pub, jobState);
 
 			list.add(card);
 		}
@@ -78,62 +78,76 @@ public class JDBCNoticeService {
 		return list;
 	}
 
-	
-	
-//	public int getCount() throws ClassNotFoundException, SQLException {
-//		int count = 0;
-//
-//		String sql = "SELECT COUNT(ID) COUNT FROM NOTICE";
-//		
-//		Connection con = dataSource.getConnection();
-//		Statement st = con.createStatement();
-//		
-//		ResultSet rs = st.executeQuery(sql);
-//
-//		if(rs.next()) 
-//			count = rs.getInt("COUNT");
-//
-//		rs.close();
-//		st.close();
-//		con.close();
-//
-//		return count;
-//	}
-//
 	public int insert(Card card, Files files) throws ClassNotFoundException, SQLException {
-		String cardId = card.getTitle();
+
 		String userName = card.getTitle();
 		int age = card.getAge();
 		int phone = card.getPhone();
 		String position = card.getPosition();
-		String pub = card.getPub_yn();
+		char pub = card.getPub_yn();
 		String jobState = card.getJob_state();
 		String url = card.getUrl();
 		String title = card.getTitle();
 		Date regDate = card.getReg_date();
-		String fileId = files.getFile_id();
 		String path = files.getPath();
 		String contentType = files.getContent_type();
 		Date updateDate = files.getUpdate_date();
 		
-		//String files = notice.getFiles();
+		Connection con = null;
+	    PreparedStatement cardSt = null;
+	    PreparedStatement filesSt = null;
+		
+		try {
+	        con = dataSource.getConnection();
+	        con.setAutoCommit(false); // 트랜잭션 시작
 
-		String sql = "INSERT INTO notice (" + "    title," + "    writer_id," + "    content," + "    files"
-				+ ") VALUES (?,?,?,?)";
+	        // 카드 정보 삽입
+	        String cardSql = "INSERT INTO BUSINESS_CARD (CARD_ID, USER_NAME, AGE, PHONE, POSITION, PUB_YN, JOB_STATE, URL, REG_DATE, HIT, TITLE)"
+	                + " VALUES (card_seq.nextval, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+	        cardSt = con.prepareStatement(cardSql);
+	        cardSt.setString(1, userName);
+	        cardSt.setInt(2, age);
+	        cardSt.setInt(3, phone);
+	        cardSt.setString(4, position);
+	        cardSt.setString(5, String.valueOf(pub)); // char를 문자열로 변환
+	        cardSt.setString(6, jobState);
+	        cardSt.setString(7, url);
+	        cardSt.setDate(8, new java.sql.Date(regDate.getTime())); // java.util.Date를 java.sql.Date로 변환
+	        cardSt.setInt(9, 0); // HIT값
+	        cardSt.setString(10, title);
 
-		Connection con = dataSource.getConnection();
-		PreparedStatement st = con.prepareStatement(sql);
-		st.setString(1, title);
-		st.setString(2, writerId);
-		st.setString(3, content);
-		st.setString(4, files);
+	        // 파일 정보 삽입
+	        String filesSql = "INSERT INTO FILES (FILE_ID, PATH, CONTENT_TYPE, UPDATE_DATE)"
+	                + " VALUES (file_seq.nextval, ?, ?, ?)";
+	        filesSt = con.prepareStatement(filesSql);
+	        filesSt.setString(1, path);
+	        filesSt.setString(2, contentType);
+	        filesSt.setDate(3, new java.sql.Date(updateDate.getTime())); // java.util.Date를 java.sql.Date로 변환
 
-		int result = st.executeUpdate();
-		st.close();
-		con.close();
-
+	        con.commit(); // 트랜잭션 커밋
+	    } catch (SQLException e) {
+	        if (con != null) {
+	            con.rollback(); // 롤백
+	        }
+	        e.printStackTrace();
+	    } finally {
+	        if (cardSt != null) {
+	            cardSt.close();
+	        }
+	        if (filesSt != null) {
+	        	filesSt.close();
+	        }
+	        if (con != null) {
+	            con.setAutoCommit(true); // 자동 커밋 활성화
+	            con.close();
+	        }
+	    }
+		
+		int result = cardSt.executeUpdate()+filesSt.executeUpdate();
 		return result;
 	}
+	
+	
 //
 //	public int update(Notice notice) throws ClassNotFoundException, SQLException {
 //		String title = notice.getTitle();

@@ -1,4 +1,4 @@
-package com.newlecture.web.controller.admin.board;
+package controller;
 
 import java.io.File;
 import java.io.IOException;
@@ -11,36 +11,32 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-@Controller("adminNoticeController")
-@RequestMapping("/admin/board/notice/")
-public class NoticeController { // <bean name="noticeController" class="com.newlecture.web.controller.admin.board" />
+@Controller("cardController")
+public class CardController { // <bean name="noticeController" class="com.newlecture.web.controller.admin.board" />
 
 	@Autowired
 	private ServletContext ctx;
 	
-	@RequestMapping("list")
+	@RequestMapping("/")
 	public String list() {
-		return "admin.board.notice.list";
+		return "/";
 	}
 	
 	@GetMapping("reg")
 	public String reg() {
-		return "admin.board.notice.reg";
+		return "reg";
 	}
 	
 	@PostMapping("reg")
-	public String reg(HttpServletRequest request, String title, String content, MultipartFile[] files, String category, String[] foods, String food) throws IllegalStateException, IOException {
+	public String reg(HttpServletRequest request, String title, MultipartFile[] files, String[] foods, String food) throws IllegalStateException, IOException {
 		
 		for(MultipartFile file : files) {
 		
 			String fileName = file.getOriginalFilename();
 			long size = file.getSize();
 			System.out.printf("fileName: %s, fileSize: %d\n", fileName, size);
-			
-			// ServletContext ctx = request.getServletContext();
 			
 			String webPath = "/static/upload";
 			String realPath = ctx.getRealPath(webPath);
@@ -58,19 +54,19 @@ public class NoticeController { // <bean name="noticeController" class="com.newl
 		
 		for(String food1 : foods)
 			System.out.println(food1);
-		return "admin.board.notice.reg";
+		return "reg";
 		
 		//return String.format("title: %s<br> content: %s<br> category: %s<br> favorite food: %s", title, content, category, food);
 	}
 	
 	@RequestMapping("edit")
 	public String edit() {
-		return "admin.board.notice.edit";
+		return "edit";
 	}
 	
 	@RequestMapping("del")
 	public String del() {
-		return "admin.board.notice.list";
+		return "/";
 	}
 	
 }
