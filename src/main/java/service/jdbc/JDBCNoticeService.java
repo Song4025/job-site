@@ -18,9 +18,10 @@ import org.springframework.stereotype.Service;
 
 import entity.Card;
 import entity.Files;
+import service.CardService;
 
 @Service
-public class JDBCNoticeService {
+public class JDBCNoticeService implements CardService{
 
 	@Autowired
 	private DataSource dataSource;
@@ -30,7 +31,7 @@ public class JDBCNoticeService {
 		int start = 1 + (page-1)*10; // 1, 11, 21, 31....
 		int end = 10*page; // 10, 20, 30, 40....
 		
-		String sql = "SELECT * FROM BUSINESS_CARD_VIEW WHERE "+field+" LIKE ? AND NUM BETWEEN ? AND ?";
+		String sql = "SELECT * FROM BUSINESS_CARD_VIEW WHERE "+field+" LIKE ? AND ROWNUM BETWEEN ? AND ?";
 //				"SELECT * FROM ("
 //				+ "SELECT ROWNUM NUM, N.* FROM ("
 //				+ "SELECT * FROM NOTICE ORDER BY REGDATE DESC"
@@ -103,7 +104,7 @@ public class JDBCNoticeService {
 
 	        // 카드 정보 삽입
 	        String cardSql = "INSERT INTO BUSINESS_CARD (CARD_ID, USER_NAME, AGE, PHONE, POSITION, PUB_YN, JOB_STATE, URL, REG_DATE, HIT, TITLE)"
-	                + " VALUES (card_seq.nextval, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+	                + " VALUES (card_seq.nextval, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 	        cardSt = con.prepareStatement(cardSql);
 	        cardSt.setString(1, userName);
 	        cardSt.setInt(2, age);
@@ -118,7 +119,7 @@ public class JDBCNoticeService {
 
 	        // 파일 정보 삽입
 	        String filesSql = "INSERT INTO FILES (FILE_ID, PATH, CONTENT_TYPE, UPDATE_DATE)"
-	                + " VALUES (file_seq.nextval, ?, ?, ?)";
+	                + " VALUES (file_seq.nextval, ?, ?, ?, ?)";
 	        filesSt = con.prepareStatement(filesSql);
 	        filesSt.setString(1, path);
 	        filesSt.setString(2, contentType);
@@ -145,6 +146,24 @@ public class JDBCNoticeService {
 		
 		int result = cardSt.executeUpdate()+filesSt.executeUpdate();
 		return result;
+	}
+
+	@Override
+	public int getCount() throws ClassNotFoundException, SQLException {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int update(Card card) throws ClassNotFoundException, SQLException {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int delete(Card id) throws ClassNotFoundException, SQLException {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 	
 	
