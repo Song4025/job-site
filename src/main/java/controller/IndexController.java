@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.ModelAndView;
 
 import entity.Card;
 import service.jdbc.JDBCNoticeService;
@@ -23,9 +24,15 @@ public class IndexController {
 	
 	@RequestMapping("/index")
 	@GetMapping
-	public Card list() throws ClassNotFoundException, SQLException {
+	public ModelAndView list() throws ClassNotFoundException, SQLException {
         List<Card> list = service.getList(1, "TITLE", "");
-        return list.get(0);
+        Card card = list.get(0);
+        
+        ModelAndView modelAndView = new ModelAndView("index");
+        modelAndView.addObject("card", card);
+        System.out.println("여기맞지?");
+        
+        return modelAndView;
     }
 
 }

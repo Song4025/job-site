@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -135,6 +135,16 @@
 							<a href="#"><img class="img-responsive" src="img/team/2.jpg"
 								alt="Team Member" /></a>
 						</div>
+					<div class="col-md-6 col-sm-6">
+						<div class="member">
+							<div class="default-heading">
+								<h2>데이터 테스트</h2>
+								<c:forEach var="item" items="${list}">
+								    <h2>${item.title}</h2>
+							    </c:forEach>
+							</div>
+					    </div>
+				    </div>
 					</div>
 				</div>
 			</div>
@@ -155,7 +165,7 @@
 					    <div class="swiper-slide">Slide 8</div>
 					    <div class="swiper-slide">Slide 9</div>
    					    <c:forEach var="bc" items="${list}" >
-						    <div class="swiper-slide">${bc.title}</div>
+						    <div class="swiper-slide">${bc.title}Slide 1</div>
 					    </c:forEach>
 					  </div>
 					  <div class="swiper-pagination"></div>
