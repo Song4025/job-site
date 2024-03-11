@@ -135,16 +135,6 @@
 							<a href="#"><img class="img-responsive" src="img/team/2.jpg"
 								alt="Team Member" /></a>
 						</div>
-					<div class="col-md-6 col-sm-6">
-						<div class="member">
-							<div class="default-heading">
-								<h2>데이터 테스트</h2>
-								<c:forEach var="item" items="${list}">
-								    <h2>${item.title}</h2>
-							    </c:forEach>
-							</div>
-					    </div>
-				    </div>
 					</div>
 				</div>
 			</div>

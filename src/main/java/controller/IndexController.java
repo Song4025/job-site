@@ -26,11 +26,9 @@ public class IndexController {
 	@GetMapping
 	public ModelAndView list() throws ClassNotFoundException, SQLException {
         List<Card> list = service.getList(1, "TITLE", "");
-        Card card = list.get(0);
         
         ModelAndView modelAndView = new ModelAndView("index");
-        modelAndView.addObject("card", card);
-        System.out.println("여기맞지?");
+        modelAndView.addObject("list", list);
         
         return modelAndView;
     }

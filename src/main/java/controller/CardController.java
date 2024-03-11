@@ -18,11 +18,9 @@ public class CardController { // <bean name="noticeController" class="com.newlec
 
 	@Autowired
 	private ServletContext ctx;
-	
-	@RequestMapping("/")
-	public String list() {
-		return "/";
-	}
+	/*
+	 * @RequestMapping("/") public String list() { return "/"; }
+	 */
 	
 	@GetMapping("reg")
 	public String reg() {
