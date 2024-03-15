@@ -105,22 +105,18 @@ public class JDBCNoticeService implements CardService{
 	        cardSt = con.prepareStatement(cardSql);
 	        cardSt.setString(1, userName);
 	        cardSt.setInt(2, age);
-	        cardSt.setString(3, phone);
+	        
 	        String phone_v = "";
-	        try{
-
-	        	phone_v = phone;
+	        try {
+	            phone_v = phone;
 	            System.out.println(Integer.parseInt(phone_v));
-
-	        }catch(NumberFormatException e){
-
-    		//NumberFormatExcetion 발생시 에러 처리
-	        	phone_v = "010"; // 디폴트 값이 있으면 설정
-	            System.out.println(Integer.parseInt(phone_v));
-
-	        }catch(Exception e){
-	            e.printStackTrace();
+	        } catch (NumberFormatException e) {
+	            phone_v = "010";
+	            System.out.println("올바른 전화번호 형식이 아닙니다.");
+	            e.printStackTrace(); 
 	        }
+	        
+	        cardSt.setString(3, phone_v);
 	        cardSt.setString(4, position);
 	        cardSt.setString(5, String.valueOf(pub)); // char를 문자열로 변환
 	        cardSt.setString(6, jobState);
