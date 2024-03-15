@@ -16,6 +16,7 @@
 <!-- Styles -->
 <!-- Bootstrap CSS -->
 <link href="css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 <!-- Font awesome CSS -->
 <link href="css/font-awesome.min.css" rel="stylesheet">
 <!-- Custom CSS -->
@@ -107,7 +108,6 @@
 		</div>
 		<!-- banner end -->
 
-
 		<!-- team -->
 		<div class="team" id="team">
 			<div class="container">
@@ -119,10 +119,9 @@
 								<h2>이력서 작성</h2>
 							</div>
 							<!-- images -->
-							<a href="#"> <img class="img-responsive" src="img/team/1.jpg"
-								alt="Team Member" /></a>
-							<!-- <span class="dig">CEO</span>
-								<a href="#">executive.member@bloger.com</a> -->
+							<a href="#" data-bs-toggle="modal" data-bs-target="#exampleModalScrollable">
+							    <img class="img-responsive" src="img/team/1.jpg" alt="Team Member" />
+							</a>
 						</div>
 					</div>
 					<div class="col-md-6 col-sm-6">
@@ -133,7 +132,8 @@
 							</div>
 							<!-- images -->
 							<a href="#"><img class="img-responsive" src="img/team/2.jpg"
-								alt="Team Member" /></a>
+								alt="Team Member" />
+							</a>
 						</div>
 					</div>
 				</div>
@@ -146,16 +146,10 @@
 					<!-- Swiper -->
 					<div class="swiper mySwiper">
 					  <div class="swiper-wrapper">
-						<div class="swiper-slide">Slide 2</div>
-					    <div class="swiper-slide">Slide 3</div>
-					    <div class="swiper-slide">Slide 4</div>
-					    <div class="swiper-slide">Slide 5</div>
-					    <div class="swiper-slide">Slide 6</div>
-					    <div class="swiper-slide">Slide 7</div>
-					    <div class="swiper-slide">Slide 8</div>
-					    <div class="swiper-slide">Slide 9</div>
    					    <c:forEach var="bc" items="${list}" >
-						    <div class="swiper-slide">${bc.title}Slide 1</div>
+						    <div class="swiper-slide">
+						    	<p>${bc.title}</p><br>
+						    </div>
 					    </c:forEach>
 					  </div>
 					  <div class="swiper-pagination"></div>
@@ -189,6 +183,94 @@
 		</footer>
 
 	</div>
+	
+	
+	<!-- Scrollable modal -->
+	<div class="modal" id="exampleModalScrollable" tabindex="-1" aria-labelledby="exampleModalScrollableLabel" aria-hidden="true">
+	  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <h5 class="modal-title" id="exampleModalScrollableLabel">명함 등록하기</h5>
+	        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+	      </div>
+	      <div class="modal-body">
+	        <!-- 모달 내용 -->
+	        <form method="post" enctype="multipart/form-data" action="/reg">
+				<div class="row">
+					<div class="mb-3">
+						<label for="title" class="form-label">타이틀</label> <input
+							type="text" class="form-control" id="title" name="title"
+							aria-describedby="title">
+					</div>
+				</div>
+				<div class="row">
+					<div class="col">
+						<label for="userName" class="form-label">이름(닉네임)</label> <input
+							type="text" class="form-control" id="userName" name="userName"
+							aria-describedby="userName">
+					</div>
+					<div class="col">
+						<label for="age" class="form-label">나이</label> <input
+							type="number" class="form-control" id="age" name="age"
+							aria-describedby="age">
+					</div>
+				</div>
+				<div class="row">
+					<div class="col">
+						<div id="aa" class="form-text"></div>
+						<label for="phone" class="form-label">핸드폰</label> <input
+							type="text" maxlength="11" class="form-control" id="phone" name="phone"
+							aria-describedby="phone">
+					</div>
+					<div class="col">
+						<div id="aa" class="form-text"></div>
+						<label for="position" class="form-label">직업포지션</label> <input
+							type="text" class="form-control" id="position" name="position"
+							aria-describedby="position">
+					</div>
+				</div>
+				<div class="row">
+					<div class="col">
+						<div id="aa" class="form-text"></div>
+						<label for="file" class="form-label">첨부파일</label> 
+						<input
+							type="file" class="form-control" id="file" name="file"
+							aria-describedby="file">
+						<input
+							type="file" class="form-control" id="file" name="file"
+							aria-describedby="file">
+					</div>
+				</div>
+				<div class="row">
+					<div class="col">
+						<div id="aa" class="form-text"></div>
+						<label for="url" class="form-label">포트폴리오 url</label> <input
+							type="text" class="form-control" id="url" name="url"
+							aria-describedby="url">
+					</div>
+				</div>
+				<div class="row" style="padding:10px;">
+					<div class="form-check form-switch col">
+						<input class="form-check-input" type="checkbox" role="switch"
+							id="pub" checked> <label class="form-check-label" name="pub"
+							for="pub">메인에 내 명함을 공개</label>
+					</div>
+					<div class="form-check form-switch col">
+						<input class="form-check-input" type="checkbox" role="switch"
+							id="jobState" name="jobState" checked> <label class="form-check-label"
+							for="jobState">현재 재직중여부</label>
+					</div>
+				</div>
+				<div class="modal-footer">
+			        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+			        <button type="submit" class="btn btn-primary">등록</button>
+			      </div>
+			</form>
+	      </div>
+	    </div>
+	  </div>
+	</div>
+	
 	<!-- Swiper JS -->
 	<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 	<!-- Initialize Swiper -->
@@ -208,6 +290,7 @@
 	<script src="js/jquery.js"></script>
 	<!-- Bootstrap JS -->
 	<script src="js/bootstrap.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 	<!-- Respond JS for IE8 -->
 	<script src="js/respond.min.js"></script>
 	<!-- HTML5 Support for IE -->

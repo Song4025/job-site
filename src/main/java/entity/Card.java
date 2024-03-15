@@ -7,7 +7,7 @@ public class Card {
 	private String card_id;
 	private String user_name;
 	private int age ;
-	private int phone ;
+	private String phone ;
 	private String position;
 	private char pub_yn ;
 	private String job_state ;
@@ -16,22 +16,22 @@ public class Card {
 	private int hit ;
 	private String title;
 	
-	public Card(String card_id, String user_name, int age, int phone, String position, char pub_yn, String job_state,
+	public Card(String cardId, String userName, int age, String phone, String position, char pub_yn, String jobState,
 			String url, Date reg_date, int hit, String title) {
-		this.card_id = card_id;
-		this.user_name = user_name;
+		this.card_id = cardId;
+		this.user_name = userName;
 		this.age = age;
 		this.phone = phone;
 		this.position = position;
 		this.pub_yn = pub_yn;
-		this.job_state = job_state;
+		this.job_state = jobState;
 		this.url = url;
 		this.reg_date = reg_date;
 		this.hit = hit;
 		this.title = title;
 	}
 
-	public Card(String id, String title2, String userName, int age2, int phone2, String position2, String url2,
+	public Card(String id, String title2, String userName, int age2, String phone2, String position2, String url2,
 			Date regDate, int hit2, char pub, String jobState) {
 		this.card_id = id;
 		this.title = title2;
@@ -50,16 +50,16 @@ public class Card {
 		return card_id;
 	}
 
-	public void setCard_id(String card_id) {
-		this.card_id = card_id;
+	public void setCard_id(String cardId) {
+		this.card_id = cardId;
 	}
 
 	public String getUser_name() {
 		return user_name;
 	}
 
-	public void setUser_name(String user_name) {
-		this.user_name = user_name;
+	public void setUser_name(String userName) {
+		this.user_name = userName;
 	}
 
 	public int getAge() {
@@ -70,11 +70,11 @@ public class Card {
 		this.age = age;
 	}
 
-	public int getPhone() {
+	public String getPhone() {
 		return phone;
 	}
 
-	public void setPhone(int phone) {
+	public void setPhone(String phone) {
 		this.phone = phone;
 	}
 

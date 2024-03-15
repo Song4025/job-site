@@ -52,7 +52,7 @@ public class JDBCNoticeService implements CardService{
 			String title = rs.getString("TITLE");
 			String userName = rs.getString("USER_NAME");
 			int age = rs.getInt("AGE");
-			int phone = rs.getInt("PHONE");
+			String phone = rs.getString("PHONE");
 			String position = rs.getString("POSITION");
 			String url = rs.getString("URL");
 			Date regDate = rs.getDate("REG_DATE");
@@ -80,7 +80,7 @@ public class JDBCNoticeService implements CardService{
 
 		String userName = card.getTitle();
 		int age = card.getAge();
-		int phone = card.getPhone();
+		String phone = card.getPhone();
 		String position = card.getPosition();
 		char pub = card.getPub_yn();
 		String jobState = card.getJob_state();
@@ -105,7 +105,22 @@ public class JDBCNoticeService implements CardService{
 	        cardSt = con.prepareStatement(cardSql);
 	        cardSt.setString(1, userName);
 	        cardSt.setInt(2, age);
-	        cardSt.setInt(3, phone);
+	        cardSt.setString(3, phone);
+	        String phone_v = "";
+	        try{
+
+	        	phone_v = phone;
+	            System.out.println(Integer.parseInt(phone_v));
+
+	        }catch(NumberFormatException e){
+
+    		//NumberFormatExcetion 발생시 에러 처리
+	        	phone_v = "010"; // 디폴트 값이 있으면 설정
+	            System.out.println(Integer.parseInt(phone_v));
+
+	        }catch(Exception e){
+	            e.printStackTrace();
+	        }
 	        cardSt.setString(4, position);
 	        cardSt.setString(5, String.valueOf(pub)); // char를 문자열로 변환
 	        cardSt.setString(6, jobState);
