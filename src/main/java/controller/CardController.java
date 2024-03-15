@@ -28,9 +28,9 @@ public class CardController {
 	}
 	
 	@PostMapping("reg")
-	public String reg(HttpServletRequest request, String title, String user_name, int age, int phone, String position, Character pub_yn, String job_state,  MultipartFile[] files, String[] foods, String food) throws IllegalStateException, IOException {
+	public String reg(HttpServletRequest request, String title, String user_name, int age, String phone, String position, Character pub_yn, String job_state,  MultipartFile[] files ) throws IllegalStateException, IOException {
 		
-		if (foods != null) {
+		if (files != null) {
 			for(MultipartFile file : files) {
 				
 				String fileName = file.getOriginalFilename();
@@ -50,14 +50,12 @@ public class CardController {
 				
 				file.transferTo(saveFile);
 			}
-			
-			for(String food1 : foods)
-				System.out.println(food1);
+
 //			return "reg";
 			
-			return String.format("title: %s<br> content: %s<br> category: %s<br> favorite food: %s", title, food);
+			return String.format("title: %s<br> age: %s<br>", title, age);
 		} else {
-			return "reg";
+			return "index";
 		}
 	}
 	
