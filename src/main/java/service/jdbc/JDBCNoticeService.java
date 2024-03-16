@@ -90,6 +90,7 @@ public class JDBCNoticeService implements CardService{
 		String path = files.getPath();
 		String contentType = files.getContent_type();
 		Date updateDate = files.getUpdate_date();
+		int card_id = files.getCard_id();
 		
 		Connection con = null;
 	    PreparedStatement cardSt = null;
@@ -134,24 +135,24 @@ public class JDBCNoticeService implements CardService{
 	        // 시퀀스로 생성된 값(카드 ID) 가져오기
 	        try (ResultSet generatedKeys = cardSt.getGeneratedKeys()) {
 	            if (generatedKeys.next()) {
-	                long cardId = generatedKeys.getLong(1); // 시퀀스로 생성된 카드 ID 값
-	                // 여기서 생성된 카드 ID 값을 사용하여 파일 정보 삽입 등의 작업을 수행할 수 있습니다.
+	                int cardId = generatedKeys.getInt(1); // 시퀀스로 생성된 카드 ID 값
+	                if(files != null) {
+	                	// 파일 정보 삽입
+	        	        String filesSql = "INSERT INTO FILES (FILE_ID, PATH, CONTENT_TYPE, UPDATE_DATE, CARD_ID)"
+	        	                + " VALUES (file_seq.nextval, ?, ?, ?, ?)";
+	        	        filesSt = con.prepareStatement(filesSql);
+	        	        filesSt.setString(1, path);
+	        	        filesSt.setString(2, contentType);
+	        	        filesSt.setDate(3, new java.sql.Date(updateDate.getTime())); // java.util.Date를 java.sql.Date로 변환
+	        	        filesSt.setInt(4, cardId);
+	                }
 	            } else {
-	                throw new SQLException("카드 정보 삽입에 실패했습니다. No ID obtained.");
+	                throw new SQLException("카드 정보 삽입에 실패했습니다.");
 	            }
 	        }
 	        
-	        // 파일 정보 삽입
-	        String filesSql = "INSERT INTO FILES (FILE_ID, PATH, CONTENT_TYPE, UPDATE_DATE, CARD_ID)"
-	                + " VALUES (file_seq.nextval, ?, ?, ?, ?, ?)";
-	        filesSt = con.prepareStatement(filesSql);
-	        filesSt.setString(1, path);
-	        filesSt.setString(2, contentType);
-	        filesSt.setDate(3, new java.sql.Date(updateDate.getTime())); // java.util.Date를 java.sql.Date로 변환
-
-	        int filesAffectedRows = filesSt.executeUpdate(); // 파일 정보 삽입 실행
-	        
 	        con.commit(); // 트랜잭션 커밋
+	        
 	    } catch (SQLException e) {
 	        if (con != null) {
 	            con.rollback(); // 롤백

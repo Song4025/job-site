@@ -21,7 +21,7 @@
 			<version>9.0.1</version>
 		</dependency>
 
-
+		<!-- https://mvnrepository.com/artifact/org.springframework/spring-jdbc -->
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-webmvc</artifactId>
@@ -34,7 +34,7 @@
 			<artifactId>jstl</artifactId>
 			<version>1.2</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>taglibs</groupId>
 			<artifactId>standard</artifactId>
@@ -52,8 +52,9 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-jdbc</artifactId>
-			<version>6.0.10</version>
+			<version>5.3.24</version>
 		</dependency>
+
 
 		<!--
 		https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core -->

@@ -195,7 +195,7 @@
 	      </div>
 	      <div class="modal-body">
 	        <!-- 모달 내용 -->
-	        <form method="post" enctype="multipart/form-data" action="/reg">
+	        <form method="post" enctype="multipart/form-data" action="/reg" id="myCard">
 				<div class="row">
 					<div class="mb-3">
 						<label for="title" class="form-label">타이틀</label> <input
@@ -234,11 +234,8 @@
 						<div id="aa" class="form-text"></div>
 						<label for="file" class="form-label">첨부파일</label> 
 						<input
-							type="file" class="form-control" id="file" name="file"
-							aria-describedby="file">
-						<input
-							type="file" class="form-control" id="file" name="file"
-							aria-describedby="file">
+							type="file" class="form-control" id="files" name="files"
+							aria-describedby="file" multiple>
 					</div>
 				</div>
 				<div class="row">
@@ -252,24 +249,25 @@
 				<div class="row" style="padding:10px;">
 					<div class="form-check form-switch col">
 						<input class="form-check-input" type="checkbox" role="switch"
-							id="pub" checked> <label class="form-check-label" name="pub"
-							for="pub">메인에 내 명함을 공개</label>
+							id="pub" name="pub">
+						<label class="form-check-label" for="pub">메인에 내 명함을 공개</label>
 					</div>
 					<div class="form-check form-switch col">
 						<input class="form-check-input" type="checkbox" role="switch"
-							id="jobState" name="jobState" checked> <label class="form-check-label"
-							for="jobState">현재 재직중여부</label>
+							id="jobState" name="jobState"> 
+						<label class="form-check-label" for="jobState">현재 재직중여부</label>
 					</div>
 				</div>
 				<div class="modal-footer">
 			        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
 			        <button type="submit" class="btn btn-primary">등록</button>
-			      </div>
+		        </div>
 			</form>
 	      </div>
 	    </div>
 	  </div>
 	</div>
+	
 	
 	<!-- Swiper JS -->
 	<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
