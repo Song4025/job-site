@@ -125,14 +125,32 @@ public class JDBCNoticeService implements CardService{
 	        cardSt.setInt(9, 0); // HIT값
 	        cardSt.setString(10, title);
 
+	        int affectedRows = cardSt.executeUpdate();
+	        
+	        if (affectedRows == 0) {
+	            throw new SQLException("카드 정보 삽입에 실패했습니다. No rows affected.");
+	        }
+	        
+	        // 시퀀스로 생성된 값(카드 ID) 가져오기
+	        try (ResultSet generatedKeys = cardSt.getGeneratedKeys()) {
+	            if (generatedKeys.next()) {
+	                long cardId = generatedKeys.getLong(1); // 시퀀스로 생성된 카드 ID 값
+	                // 여기서 생성된 카드 ID 값을 사용하여 파일 정보 삽입 등의 작업을 수행할 수 있습니다.
+	            } else {
+	                throw new SQLException("카드 정보 삽입에 실패했습니다. No ID obtained.");
+	            }
+	        }
+	        
 	        // 파일 정보 삽입
-	        String filesSql = "INSERT INTO FILES (FILE_ID, PATH, CONTENT_TYPE, UPDATE_DATE)"
-	                + " VALUES (file_seq.nextval, ?, ?, ?, ?)";
+	        String filesSql = "INSERT INTO FILES (FILE_ID, PATH, CONTENT_TYPE, UPDATE_DATE, CARD_ID)"
+	                + " VALUES (file_seq.nextval, ?, ?, ?, ?, ?)";
 	        filesSt = con.prepareStatement(filesSql);
 	        filesSt.setString(1, path);
 	        filesSt.setString(2, contentType);
 	        filesSt.setDate(3, new java.sql.Date(updateDate.getTime())); // java.util.Date를 java.sql.Date로 변환
 
+	        int filesAffectedRows = filesSt.executeUpdate(); // 파일 정보 삽입 실행
+	        
 	        con.commit(); // 트랜잭션 커밋
 	    } catch (SQLException e) {
 	        if (con != null) {
