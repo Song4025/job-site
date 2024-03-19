@@ -19,6 +19,10 @@ public class Files {
 	}
 
 
+	public Files() {
+	}
+
+
 	public String getFile_id() {
 		return file_id;
 	}

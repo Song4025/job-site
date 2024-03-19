@@ -12,6 +12,7 @@ import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import entity.Card;
 import entity.Files;
@@ -56,13 +57,9 @@ public class JDBCNoticeService implements CardService{
 			String position = rs.getString("POSITION");
 			String url = rs.getString("URL");
 			Date regDate = rs.getDate("REG_DATE");
-			int hit = rs.getInt("HIT");
-			char pub = ' '; 
-			String pubStr = rs.getString("PUB_YN");
-			if (pubStr != null && !pubStr.isEmpty()) {
-				pub = pubStr.charAt(0);
-		    }
-			String jobState = rs.getString("JOB_STATE");
+			int hit = rs.getInt("HIT"); 
+			boolean pub = rs.getBoolean("PUB_YN");
+			boolean jobState = rs.getBoolean("JOB_STATE");
 			
 			Card card = new Card(cardId, title, userName, age, phone, position, url, regDate, hit, pub, jobState);
 
@@ -82,19 +79,16 @@ public class JDBCNoticeService implements CardService{
 		int age = card.getAge();
 		String phone = card.getPhone();
 		String position = card.getPosition();
-		char pub = card.getPub_yn();
-		String jobState = card.getJob_state();
 		String url = card.getUrl();
 		String title = card.getTitle();
-		Date regDate = card.getReg_date();
 		String path = files.getPath();
 		String contentType = files.getContent_type();
 		Date updateDate = files.getUpdate_date();
-		int card_id = files.getCard_id();
 		
 		Connection con = null;
 	    PreparedStatement cardSt = null;
 	    PreparedStatement filesSt = null;
+	    int result = 0;
 		
 		try {
 	        con = dataSource.getConnection();
@@ -102,7 +96,7 @@ public class JDBCNoticeService implements CardService{
 
 	        // 카드 정보 삽입
 	        String cardSql = "INSERT INTO BUSINESS_CARD (CARD_ID, USER_NAME, AGE, PHONE, POSITION, PUB_YN, JOB_STATE, URL, REG_DATE, HIT, TITLE)"
-	                + " VALUES (card_seq.nextval, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+	                + " VALUES (card_seq.nextval, ?, ?, ?, ?, ?, ?, ?, SYSDATE, ?, ?)";
 	        cardSt = con.prepareStatement(cardSql);
 	        cardSt.setString(1, userName);
 	        cardSt.setInt(2, age);
@@ -112,24 +106,28 @@ public class JDBCNoticeService implements CardService{
 	            phone_v = phone;
 	            System.out.println(Integer.parseInt(phone_v));
 	        } catch (NumberFormatException e) {
-	            phone_v = "010";
 	            System.out.println("올바른 전화번호 형식이 아닙니다.");
 	            e.printStackTrace(); 
 	        }
 	        
 	        cardSt.setString(3, phone_v);
 	        cardSt.setString(4, position);
-	        cardSt.setString(5, String.valueOf(pub)); // char를 문자열로 변환
-	        cardSt.setString(6, jobState);
-	        cardSt.setString(7, url);
-	        cardSt.setDate(8, new java.sql.Date(regDate.getTime())); // java.util.Date를 java.sql.Date로 변환
-	        cardSt.setInt(9, 0); // HIT값
-	        cardSt.setString(10, title);
-
-	        int affectedRows = cardSt.executeUpdate();
+	        String pubYnValue = card.isPub_yn() ? "1" : "0";
+	        String jobStateValue = card.isJob_state() ? "1" : "0";
 	        
-	        if (affectedRows == 0) {
-	            throw new SQLException("카드 정보 삽입에 실패했습니다. No rows affected.");
+	        cardSt.setString(5, pubYnValue);
+	        cardSt.setString(6, jobStateValue);
+	        cardSt.setString(7, url);
+	        cardSt.setInt(8, 0);
+	        cardSt.setString(9, title);
+
+	        int cardAffectedRows = cardSt.executeUpdate();
+	        int filesAffectedRows = 0;
+	        
+	        if (cardAffectedRows == 0) {
+	            throw new SQLException("카드 정보 삽입에 실패했습니다.");
+	        } else {
+	        	System.out.println("카드정보 삽입성공!");
 	        }
 	        
 	        // 시퀀스로 생성된 값(카드 ID) 가져오기
@@ -145,6 +143,12 @@ public class JDBCNoticeService implements CardService{
 	        	        filesSt.setString(2, contentType);
 	        	        filesSt.setDate(3, new java.sql.Date(updateDate.getTime())); // java.util.Date를 java.sql.Date로 변환
 	        	        filesSt.setInt(4, cardId);
+	        	        filesAffectedRows = filesSt.executeUpdate();
+	                    if (filesAffectedRows == 0) {
+	                        throw new SQLException("파일 정보 삽입에 실패했습니다. No rows affected.");
+	                    } else {
+	                        System.out.println("파일 정보 삽입 성공");
+	                    }
 	                }
 	            } else {
 	                throw new SQLException("카드 정보 삽입에 실패했습니다.");
@@ -153,6 +157,9 @@ public class JDBCNoticeService implements CardService{
 	        
 	        con.commit(); // 트랜잭션 커밋
 	        
+        result = cardAffectedRows + filesAffectedRows;
+        
+        
 	    } catch (SQLException e) {
 	        if (con != null) {
 	            con.rollback(); // 롤백
@@ -171,7 +178,7 @@ public class JDBCNoticeService implements CardService{
 	        }
 	    }
 		
-		int result = cardSt.executeUpdate()+filesSt.executeUpdate();
+		//int result = cardSt.executeUpdate()+filesSt.executeUpdate();
 		return result;
 	}
 
@@ -191,6 +198,12 @@ public class JDBCNoticeService implements CardService{
 	public int delete(Card id) throws ClassNotFoundException, SQLException {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	public void insert(String title, String userName, int age, String phone, String url, boolean pub, boolean jobState,
+			MultipartFile[] files) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 	

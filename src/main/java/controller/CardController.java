@@ -1,30 +1,26 @@
 package controller;
 
-import java.io.File;
+import java.io.File; 
 import java.io.IOException;
-import java.util.List;
-
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
+import java.sql.SQLException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+
+import entity.Card;
+import entity.Files;
+import service.jdbc.JDBCNoticeService;
 
 @Controller("cardController")
 public class CardController {
 
-	private final String filePath = "C:\\fileUpload";
-	
 	@Autowired
-	private ServletContext ctx;
-	/*
-	 * @RequestMapping("/") public String list() { return "/"; }
-	 */
+	private JDBCNoticeService service;
+	private final String filePath = "C:\\fileUpload";
 
 	@GetMapping("/reg")
 	public String reg() {
@@ -33,7 +29,7 @@ public class CardController {
 
 	@PostMapping("/reg")
 	public String reg(String title, String userName, int age,
-		 String phone, String url, boolean pub, boolean jobState, MultipartFile[] files) throws IllegalStateException, IOException {
+		 String phone, String position, String url, boolean pub, boolean jobState, MultipartFile[] files) throws IllegalStateException, IOException {
 
 		if (files != null) {
 			for (MultipartFile file : files) {
@@ -52,6 +48,24 @@ public class CardController {
 
 				file.transferTo(saveFile);
 			}
+		}
+		
+		// Card 객체 생성 및 값 설정
+        Card card = new Card();
+        card.setTitle(title);
+        card.setUser_name(userName);
+        card.setAge(age);
+        card.setPhone(phone);
+        card.setPosition(position);
+        card.setUrl(url);
+        card.setPub_yn(pub);
+        card.setJob_state(jobState);
+        Files insertFiles = new Files();
+
+        try {
+			service.insert(card, insertFiles);
+		} catch (ClassNotFoundException | SQLException e) {
+			e.printStackTrace();
 		}
 		
 		return "index";
