@@ -90,87 +90,72 @@ public class JDBCNoticeService implements CardService{
 	    PreparedStatement filesSt = null;
 	    int result = 0;
 		
-		try {
-	        con = dataSource.getConnection();
-	        con.setAutoCommit(false); // 트랜잭션 시작
 
-	        // 카드 정보 삽입
-	        String cardSql = "INSERT INTO BUSINESS_CARD (CARD_ID, USER_NAME, AGE, PHONE, POSITION, PUB_YN, JOB_STATE, URL, REG_DATE, HIT, TITLE)"
-	                + " VALUES (card_seq.nextval, ?, ?, ?, ?, ?, ?, ?, SYSDATE, ?, ?)";
-	        cardSt = con.prepareStatement(cardSql);
-	        cardSt.setString(1, userName);
-	        cardSt.setInt(2, age);
-	        
-	        String phone_v = "";
-	        try {
-	            phone_v = phone;
-	            System.out.println(Integer.parseInt(phone_v));
-	        } catch (NumberFormatException e) {
-	            System.out.println("올바른 전화번호 형식이 아닙니다.");
-	            e.printStackTrace(); 
-	        }
-	        
-	        cardSt.setString(3, phone_v);
-	        cardSt.setString(4, position);
-	        String pubYnValue = card.isPub_yn() ? "1" : "0";
-	        String jobStateValue = card.isJob_state() ? "1" : "0";
-	        
-	        cardSt.setString(5, pubYnValue);
-	        cardSt.setString(6, jobStateValue);
-	        cardSt.setString(7, url);
-	        cardSt.setInt(8, 0);
-	        cardSt.setString(9, title);
+        con = dataSource.getConnection();
 
-	        int cardAffectedRows = cardSt.executeUpdate();
-	        int filesAffectedRows = 0;
-	        
-	        if (cardAffectedRows == 0) {
-	            throw new SQLException("카드 정보 삽입에 실패했습니다.");
-	        } else {
-	        	System.out.println("카드정보 삽입성공!");
-	        }
-	        
-	        // 시퀀스로 생성된 값(카드 ID) 가져오기
-	        try (ResultSet generatedKeys = cardSt.getGeneratedKeys()) {
-	            if (generatedKeys.next()) {
-	                int cardId = generatedKeys.getInt(1); // 시퀀스로 생성된 카드 ID 값
-	                if(files != null) {
-	                	// 파일 정보 삽입
-	        	        String filesSql = "INSERT INTO FILES (FILE_ID, PATH, CONTENT_TYPE, UPDATE_DATE, CARD_ID)"
-	        	                + " VALUES (file_seq.nextval, ?, ?, ?, ?)";
-	        	        filesSt = con.prepareStatement(filesSql);
-	        	        filesSt.setString(1, path);
-	        	        filesSt.setString(2, contentType);
-	        	        filesSt.setDate(3, new java.sql.Date(updateDate.getTime())); // java.util.Date를 java.sql.Date로 변환
-	        	        filesSt.setInt(4, cardId);
-	        	        filesAffectedRows = filesSt.executeUpdate();
-	                    if (filesAffectedRows == 0) {
-	                        throw new SQLException("파일 정보 삽입에 실패했습니다.");
-	                    } else {
-	                        System.out.println("파일 정보 삽입 성공");
-	                    }
-	                }
-	            } else {
-	                throw new SQLException("카드 정보 삽입에 실패했습니다.");
-	            }
-	        }
-	        
-	        con.commit(); // 트랜잭션 커밋
-	        
-        result = cardAffectedRows + filesAffectedRows;
+        // 카드 정보 삽입
+        String cardSql = "INSERT INTO BUSINESS_CARD (CARD_ID, USER_NAME, AGE, PHONE, POSITION, PUB_YN, JOB_STATE, URL, REG_DATE, HIT, TITLE)"
+                + " VALUES (card_seq.nextval, ?, ?, ?, ?, ?, ?, ?, SYSDATE, ?, ?)";
+        cardSt = con.prepareStatement(cardSql);
+        cardSt.setString(1, userName);
+        cardSt.setInt(2, age);
         
-		} catch (SQLException e) {
-		    if (con != null) {
-		        try {
-		            con.rollback(); // 트랜잭션 롤백
-		        } catch (SQLException rollbackEx) {
-		            rollbackEx.printStackTrace();
-		        }
-		    }
-		    e.printStackTrace();
-		}
-		
-		//int result = cardSt.executeUpdate()+filesSt.executeUpdate();
+        String phone_v = "";
+        try {
+            phone_v = phone;
+            System.out.println(Integer.parseInt(phone_v));
+        } catch (NumberFormatException e) {
+            System.out.println("올바른 전화번호 형식이 아닙니다.");
+            e.printStackTrace(); 
+        }
+        
+        cardSt.setString(3, phone_v);
+        cardSt.setString(4, position);
+        String pubYnValue = card.isPub_yn() ? "1" : "0";
+        String jobStateValue = card.isJob_state() ? "1" : "0";
+        
+        cardSt.setString(5, pubYnValue);
+        cardSt.setString(6, jobStateValue);
+        cardSt.setString(7, url);
+        cardSt.setInt(8, 0);
+        cardSt.setString(9, title);
+
+        int cardAffectedRows = cardSt.executeUpdate();
+        int filesAffectedRows = 0;
+        
+        if (cardAffectedRows == 0) {
+            throw new SQLException("카드 정보 삽입에 실패했습니다.");
+        } else {
+        	System.out.println("카드정보 삽입성공!");
+        }
+        
+        result = cardAffectedRows;
+        
+        // 시퀀스로 생성된 값(카드 ID) 가져오기
+        try (ResultSet generatedKeys = cardSt.getGeneratedKeys()) {
+            if (generatedKeys.next()) {
+                int cardId = generatedKeys.getInt(1); // 시퀀스로 생성된 카드 ID 값
+                if(files != null) {
+                	// 파일 정보 삽입
+        	        String filesSql = "INSERT INTO FILES (FILE_ID, PATH, CONTENT_TYPE, UPDATE_DATE, CARD_ID)"
+        	                + " VALUES (file_seq.nextval, ?, ?, ?, ?)";
+        	        filesSt = con.prepareStatement(filesSql);
+        	        filesSt.setString(1, path);
+        	        filesSt.setString(2, contentType);
+        	        filesSt.setDate(3, new java.sql.Date(updateDate.getTime())); // java.util.Date를 java.sql.Date로 변환
+        	        filesSt.setInt(4, cardId);
+        	        filesAffectedRows = filesSt.executeUpdate();
+                    if (filesAffectedRows == 0) {
+                        throw new SQLException("파일 정보 삽입에 실패했습니다.");
+                    } else {
+                        System.out.println("파일 정보 삽입 성공");
+                    }
+                }
+            } else {
+                throw new SQLException("카드 정보 삽입에 실패했습니다.");
+            }
+        }
+
 		return result;
 	}
 
