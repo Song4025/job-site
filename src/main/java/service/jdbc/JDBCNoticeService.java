@@ -145,7 +145,7 @@ public class JDBCNoticeService implements CardService{
 	        	        filesSt.setInt(4, cardId);
 	        	        filesAffectedRows = filesSt.executeUpdate();
 	                    if (filesAffectedRows == 0) {
-	                        throw new SQLException("파일 정보 삽입에 실패했습니다. No rows affected.");
+	                        throw new SQLException("파일 정보 삽입에 실패했습니다.");
 	                    } else {
 	                        System.out.println("파일 정보 삽입 성공");
 	                    }
@@ -159,24 +159,16 @@ public class JDBCNoticeService implements CardService{
 	        
         result = cardAffectedRows + filesAffectedRows;
         
-        
-	    } catch (SQLException e) {
-	        if (con != null) {
-	            con.rollback(); // 롤백
-	        }
-	        e.printStackTrace();
-	    } finally {
-	        if (cardSt != null) {
-	            cardSt.close();
-	        }
-	        if (filesSt != null) {
-	        	filesSt.close();
-	        }
-	        if (con != null) {
-	            con.setAutoCommit(true); // 자동 커밋 활성화
-	            con.close();
-	        }
-	    }
+		} catch (SQLException e) {
+		    if (con != null) {
+		        try {
+		            con.rollback(); // 트랜잭션 롤백
+		        } catch (SQLException rollbackEx) {
+		            rollbackEx.printStackTrace();
+		        }
+		    }
+		    e.printStackTrace();
+		}
 		
 		//int result = cardSt.executeUpdate()+filesSt.executeUpdate();
 		return result;
