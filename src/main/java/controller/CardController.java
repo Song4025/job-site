@@ -3,6 +3,7 @@ package controller;
 import java.io.File; 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -29,7 +30,7 @@ public class CardController {
 
 	@PostMapping("/reg")
 	public String reg(String title, String userName, int age,
-		 String phone, String position, String url, boolean pub, boolean jobState, MultipartFile[] files) throws IllegalStateException, IOException {
+		 String phone, String position, String url, boolean pub, boolean jobState, MultipartFile[] files) throws IllegalStateException, IOException, ClassNotFoundException, SQLException {
 
 		if (files != null) {
 			for (MultipartFile file : files) {
@@ -61,12 +62,19 @@ public class CardController {
         card.setPub_yn(pub);
         card.setJob_state(jobState);
         Files insertFiles = new Files();
-
-        try {
-			service.insert(card, insertFiles);
-		} catch (ClassNotFoundException | SQLException e) {
-			e.printStackTrace();
+        if (files != null) {
+			for (MultipartFile file : files) {
+				if(file.getSize() == 0L) {
+					continue;
+				}
+				String fileName = file.getOriginalFilename();
+				insertFiles.setContent_type(fileName);
+				insertFiles.setUpdate_date(new Date());
+			}
 		}
+        
+        insertFiles.setPath(filePath);
+		service.insert(card, insertFiles);
 		
 		return "index";
 	}

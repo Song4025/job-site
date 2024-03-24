@@ -147,8 +147,8 @@
 					<div class="swiper mySwiper">
 					  <div class="swiper-wrapper">
    					    <c:forEach var="bc" items="${list}" >
-						    <div class="swiper-slide">
-						    	<p>${bc.title}</p><br>
+						    <div class="swiper-slide"  style="cursor: pointer;>
+						    	<p">${bc.title}</p>
 						    </div>
 					    </c:forEach>
 					  </div>
@@ -268,7 +268,90 @@
 	  </div>
 	</div>
 	
-	
+	<!-- update를 위한 modal -->
+	<c:forEach var="bc" items="${list}" >
+	<div class="modal" id="updateModal" tabindex="-1" aria-labelledby="exampleModalScrollableLabel" aria-hidden="true">
+	  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <h5 class="modal-title" id="exampleModalScrollableLabel">등록된 명함 정보</h5>
+	        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+	      </div>
+	      <div class="modal-body">
+	        <!-- 모달 내용 -->
+	        <form method="post" enctype="multipart/form-data" action="/reg" id="myCard_${status.index}">
+				<div class="row">
+					<div class="mb-3">
+						<label for="title" class="form-label">타이틀</label> <input
+							type="text" class="form-control" id="title" name="title"
+							aria-describedby="title" value="${bc.title}">
+					</div>
+				</div>
+				<div class="row">
+					<div class="col">
+						<label for="userName" class="form-label">이름(닉네임)</label> <input
+							type="text" class="form-control" id="userName" name="userName"
+							aria-describedby="userName">
+					</div>
+					<div class="col">
+						<label for="age" class="form-label">나이</label> <input
+							type="number" class="form-control" id="age" name="age"
+							aria-describedby="age">
+					</div>
+				</div>
+				<div class="row">
+					<div class="col">
+						<div id="aa" class="form-text"></div>
+						<label for="phone" class="form-label">핸드폰</label> <input
+							type="text" maxlength="11" class="form-control" id="phone" name="phone"
+							aria-describedby="phone">
+					</div>
+					<div class="col">
+						<div id="aa" class="form-text"></div>
+						<label for="position" class="form-label">직업포지션</label> <input
+							type="text" class="form-control" id="position" name="position"
+							aria-describedby="position">
+					</div>
+				</div>
+				<div class="row">
+					<div class="col">
+						<div id="aa" class="form-text"></div>
+						<label for="file" class="form-label">첨부파일</label> 
+						<input
+							type="file" class="form-control" id="files" name="files"
+							aria-describedby="file" multiple>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col">
+						<div id="aa" class="form-text"></div>
+						<label for="url" class="form-label">포트폴리오 url</label> <input
+							type="text" class="form-control" id="url" name="url"
+							aria-describedby="url">
+					</div>
+				</div>
+				<div class="row" style="padding:10px;">
+					<div class="form-check form-switch col">
+						<input class="form-check-input" type="checkbox" role="switch"
+							id="pub" name="pub">
+						<label class="form-check-label" for="pub">메인에 내 명함을 공개</label>
+					</div>
+					<div class="form-check form-switch col">
+						<input class="form-check-input" type="checkbox" role="switch"
+							id="jobState" name="jobState"> 
+						<label class="form-check-label" for="jobState">현재 재직중여부</label>
+					</div>
+				</div>
+				<div class="modal-footer">
+			        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">삭제</button>
+			        <button type="submit" class="btn btn-primary">수정</button>
+		        </div>
+			</form>
+	      </div>
+	    </div>
+	  </div>
+	</div>
+	</c:forEach>
 	<!-- Swiper JS -->
 	<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 	<!-- Initialize Swiper -->
@@ -282,7 +365,21 @@
 	    },
 	  });
 	</script>
+	<!-- swipers 의 하나의 swiper 클릭시 모달 -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script>
+    function showModal(index) {
+        $('#updateModal_' + index).modal('show');
+    }
+
+    $(document).ready(function() {
+        $('body').on('click', '.card', function() {
+            const index = $(this).data('index');
+            showModal(index);
+        });
+    });
 	
+	</script>
 	<!-- Javascript files -->
 	<!-- jQuery -->
 	<script src="js/jquery.js"></script>
