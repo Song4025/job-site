@@ -108,7 +108,7 @@ public class JDBCNoticeService implements CardService {
 	}
 
 	public int insert(Card card, Files files) throws ClassNotFoundException, SQLException {
-		String userName = card.getTitle();
+		String userName = card.getUser_name();
 		int age = card.getAge();
 		String phone = card.getPhone();
 		String position = card.getPosition();

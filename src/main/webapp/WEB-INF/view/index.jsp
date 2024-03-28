@@ -386,18 +386,6 @@
 		    },
 		});
 		
-		// 수정,삭제 비동기통신
-		async function fetchDataAndLog(slideId) {
-		    try {
-		    	const url = 'http://localhost:8080/select?id=' + slideId;
-		        const response = await fetch(url);
-		        const data = await response.json();
-		        fillData(data); // 모달에 데이터 채우는 함수 호출
-		        $('#updateModal_' + slideId).modal('show'); // 모달 표시
-		    } catch (error) {
-		        console.error(error.message);
-		    }
-		}
 		// 슬라이드 클릭시 비동기 통신 발생
 	    const slides = document.querySelectorAll('.swiper-slide');
     	slides.forEach((slide) => {
@@ -406,10 +394,23 @@
 	            fetchDataAndLog(slideId);
 	    	})
 	    });
+    	// 수정,삭제 비동기통신
+		async function fetchDataAndLog(slideId) {
+		    try {
+		    	const url = 'http://localhost:8080/select?id=' + slideId;
+		        const response = await fetch(url);
+		        const data = await response.json();
+		        const modal_id = $('#updateModal_' + slideId)
+		        console.log('modal아이디: ', modal_id);
+		        $('#updateModal_' + slideId).modal('show'); // 모달 표시
+		        fillData(data); // 모달에 데이터 채우는 함수 호출
+		    } catch (error) {
+		        console.error(error.message);
+		    }
+		}
 	    // 비동기 통신에 데이터 채우기
     	function fillData(data) {
-    	    console.log(data);
-    	    console.log(data.pub_yn);
+    	    console.log('data: ', data);
     	    document.getElementById('upTitle').value = data.title;
     	    document.getElementById('upUserName').value = data.user_name;
     	    document.getElementById('upAge').value = data.age;
