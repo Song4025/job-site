@@ -74,6 +74,38 @@ public class JDBCNoticeService implements CardService {
 
 		return list;
 	}
+	
+	public Card getOneCard(Integer id) {
+		String sql = "SELECT * FROM BUSINESS_CARD_VIEW WHERE CARD_ID = ?"  ;
+		
+		try ( Connection con = dataSource.getConnection(); PreparedStatement st = con.prepareStatement(sql);) {
+			st.setInt(1, id);
+			// JDBC 드라이버 로드
+			ResultSet rs = st.executeQuery();
+			if(rs.next()) {
+				String cardId = rs.getString("CARD_ID");
+				String title = rs.getString("TITLE");
+				String userName = rs.getString("USER_NAME");
+				int age = rs.getInt("AGE");
+				String phone = rs.getString("PHONE");
+				String position = rs.getString("POSITION");
+				String url = rs.getString("URL");
+				Date regDate = rs.getDate("REG_DATE");
+				int hit = rs.getInt("HIT");
+				boolean pub = rs.getBoolean("PUB_YN");
+				boolean jobState = rs.getBoolean("JOB_STATE");
+			
+				return  new Card(cardId, title, userName, age, phone, position, url, regDate, hit, pub, jobState);
+			}
+		}catch (SQLException e) {
+	        e.printStackTrace();
+	    }finally {
+	    	if (id == null) {
+	            System.out.println("해당 ID에 대한 카드를 찾을 수 없습니다.");
+	        }
+		}
+		return null;
+	}
 
 	public int insert(Card card, Files files) throws ClassNotFoundException, SQLException {
 		String userName = card.getTitle();
@@ -176,6 +208,10 @@ public class JDBCNoticeService implements CardService {
 		// TODO Auto-generated method stub
 
 	}
+
+
+
+	
 
 //
 //	public int update(Notice notice) throws ClassNotFoundException, SQLException {

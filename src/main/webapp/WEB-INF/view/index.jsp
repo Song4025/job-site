@@ -384,21 +384,21 @@
 		});
 		
 		// 수정,삭제 비동기통신
-		async function fetchDataAndLog() {
+		async function fetchDataAndLog(slideId) {
 		    try {
-		        const response = await fetch('http://localhost:8080/select');
+		    	const url = 'http://localhost:8080/select?id=' + slideId;
+		        const response = await fetch(url);
 		        const data = await response.json();
-		        console.log(data); // 데이터를 콘솔에 출력
+		        console.log(data); 
 		    } catch (error) {
 		        console.error(error.message);
 		    }
 		}
 		
 	    const slides = document.querySelectorAll('.swiper-slide');
-	    slides.forEach((slide) => {
+    	slides.forEach((slide) => {
 	    	slide.addEventListener('click', ()=>{
-	            const slideId = slide.getAttribute('data-slide-id'); // 클릭한 슬라이드의 ID 또는 식별자
-	            console.log(slideId);
+	            const slideId = slide.getAttribute('data-slide-id');
 	            fetchDataAndLog(slideId);
 	    	})
 	    });
