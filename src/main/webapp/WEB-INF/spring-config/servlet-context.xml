@@ -12,7 +12,7 @@
         ">
 
 	<context:component-scan
-		base-package="controller, service"></context:component-scan>
+		base-package="controller, service, api"></context:component-scan>
 
 	<bean
 		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
