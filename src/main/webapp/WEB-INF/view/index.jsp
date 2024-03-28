@@ -269,6 +269,7 @@
 	  </div>
 	</div>
 	</c:forEach>
+	
 	<!-- update를 위한 modal -->
 	<c:forEach var="bc" items="${list}">
 		<div class="modal" id="updateModal_${bc.card_id}" tabindex="-1" aria-labelledby="exampleModalScrollableLabel" aria-hidden="true">
@@ -284,34 +285,34 @@
 					<div class="row">
 						<div class="mb-3">
 							<label for="title" class="form-label">타이틀</label> <input
-								type="text" class="form-control" id="title" name="title"
-								aria-describedby="title" >
+								type="text" class="form-control" id="upTitle" name="upTitle"
+								aria-describedby="upTitle" >
 						</div>
 					</div>
 					<div class="row">
 						<div class="col">
 							<label for="userName" class="form-label">이름(닉네임)</label> <input
-								type="text" class="form-control" id="userName" name="userName"
-								aria-describedby="userName">
+								type="text" class="form-control" id="upUserName" name="upUserName"
+								aria-describedby="upUserName">
 						</div>
 						<div class="col">
 							<label for="age" class="form-label">나이</label> <input
-								type="number" class="form-control" id="age" name="age"
-								aria-describedby="age">
+								type="number" class="form-control" id="upAge" name="upAge"
+								aria-describedby="upAge">
 						</div>
 					</div>
 					<div class="row">
 						<div class="col">
 							<div id="aa" class="form-text"></div>
 							<label for="phone" class="form-label">핸드폰</label> <input
-								type="text" maxlength="11" class="form-control" id="phone" name="phone"
-								aria-describedby="phone">
+								type="text" maxlength="11" class="form-control" id="upPhone" name="upPhone"
+								aria-describedby="upPhone">
 						</div>
 						<div class="col">
 							<div id="aa" class="form-text"></div>
 							<label for="position" class="form-label">직업포지션</label> <input
-								type="text" class="form-control" id="position" name="position"
-								aria-describedby="position">
+								type="text" class="form-control" id="upPosition" name="upPosition"
+								aria-describedby="upPosition">
 						</div>
 					</div>
 					<div class="row">
@@ -319,27 +320,27 @@
 							<div id="aa" class="form-text"></div>
 							<label for="file" class="form-label">첨부파일</label> 
 							<input
-								type="file" class="form-control" id="files" name="files"
-								aria-describedby="file" multiple>
+								type="file" class="form-control" id="upFiles" name="upFiles"
+								aria-describedby="upFiles" multiple>
 						</div>
 					</div>
 					<div class="row">
 						<div class="col">
 							<div id="aa" class="form-text"></div>
 							<label for="url" class="form-label">포트폴리오 url</label> <input
-								type="text" class="form-control" id="url" name="url"
-								aria-describedby="url">
+								type="text" class="form-control" id="upUrl" name="upUrl"
+								aria-describedby="upUrl">
 						</div>
 					</div>
 					<div class="row" style="padding:10px;">
 						<div class="form-check form-switch col">
 							<input class="form-check-input" type="checkbox" role="switch"
-								id="pub" name="pub">
+								id="upPub" name="upPub">
 							<label class="form-check-label" for="pub">메인에 내 명함을 공개</label>
 						</div>
 						<div class="form-check form-switch col">
 							<input class="form-check-input" type="checkbox" role="switch"
-								id="jobState" name="jobState"> 
+								id="upJobState" name="upJobState"> 
 							<label class="form-check-label" for="jobState">현재 재직중여부</label>
 						</div>
 					</div>
@@ -366,6 +367,8 @@
 	<script src="js/html5shiv.js"></script>
 	<!-- Custom JS -->
 	<script src="js/custom.js"></script>
+	<!-- JQuery  -->
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 	<!-- Swiper JS -->
 	<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
@@ -389,12 +392,13 @@
 		    	const url = 'http://localhost:8080/select?id=' + slideId;
 		        const response = await fetch(url);
 		        const data = await response.json();
-		        console.log(data); 
+		        fillData(data); // 모달에 데이터 채우는 함수 호출
+		        $('#updateModal_' + slideId).modal('show'); // 모달 표시
 		    } catch (error) {
 		        console.error(error.message);
 		    }
 		}
-		
+		// 슬라이드 클릭시 비동기 통신 발생
 	    const slides = document.querySelectorAll('.swiper-slide');
     	slides.forEach((slide) => {
 	    	slide.addEventListener('click', ()=>{
@@ -402,7 +406,19 @@
 	            fetchDataAndLog(slideId);
 	    	})
 	    });
-	    
+	    // 비동기 통신에 데이터 채우기
+    	function fillData(data) {
+    	    console.log(data);
+    	    console.log(data.pub_yn);
+    	    document.getElementById('upTitle').value = data.title;
+    	    document.getElementById('upUserName').value = data.user_name;
+    	    document.getElementById('upAge').value = data.age;
+    	    document.getElementById('upPhone').value = data.phone;
+    	    document.getElementById('upPosition').value = data.position;
+    	    document.getElementById('upUrl').value = data.url;
+    	    document.getElementById('upPub').checked = data.pub_yn ? true : false;
+    	    document.getElementById('upJobState').checked = data.job_state ? true : false;
+    	}
 	});
 	</script>
 	
