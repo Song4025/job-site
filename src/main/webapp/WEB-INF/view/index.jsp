@@ -291,12 +291,16 @@
 					<div class="modal-header">
 						<h5 class="modal-title" id="exampleModalScrollableLabel">등록된
 							명함 정보</h5>
+						<div class="col" style="text-align:right;">
+							<label for="regDate" class="form-label">최종 수정일</label> 
+							<p id="regDate" style="display:inline;">${bc.reg_date}</p>
+						</div>
 						<button type="button" class="btn-close" data-bs-dismiss="modal"
 							aria-label="Close"></button>
 					</div>
 					<div class="modal-body">
 						<!-- 모달 내용 -->
-						<form method="post" enctype="multipart/form-data" action="/reg"
+						<form method="post" enctype="multipart/form-data" action="/update"
 							id="myCard_${status.index}">
 							<div class="row">
 								<div class="mb-3">
