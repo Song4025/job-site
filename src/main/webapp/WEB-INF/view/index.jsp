@@ -281,7 +281,7 @@
 		</div>
 	</c:forEach>
 
-	<!-- update를 위한 modal -->
+	<!-- update modal -->
 	<c:forEach var="bc" items="${list}">
 		<div class="modal" id="updateModal_${bc.card_id}" tabindex="-1"
 			aria-labelledby="exampleModalScrollableLabel" aria-hidden="true">
