@@ -57,6 +57,7 @@ public class CardController {
         Card card = new Card();
         card.setTitle(title);
         card.setUser_name(userName);
+        
         card.setAge(age);
         card.setPhone(phone);
         card.setPosition(position);

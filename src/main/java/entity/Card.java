@@ -6,7 +6,7 @@ public class Card {
 	
 	private String card_id;
 	private String user_name;
-	private int age ;
+	private Integer age ;
 	private String phone ;
 	private String position;
 	private boolean pub_yn ;
@@ -19,15 +19,15 @@ public class Card {
 	public Card() {
 	}
 
-	public Card(String id, String title2, String userName, int age2, String phone2, String position2, String url2,
+	public Card(String id, String title, String userName, Integer age, String phone, String position, String url,
 			Date regDate, int hit2, boolean pub, boolean jobState) {
 		this.card_id = id;
-		this.title = title2;
+		this.title = title;
 		this.user_name = userName;
-		this.age = age2;
-		this.phone = phone2;
-		this.position = position2;
-		this.url = url2;
+		this.age = age;
+		this.phone = phone;
+		this.position = position;
+		this.url = url;
 		this.reg_date = regDate;
 		this.hit = hit2;
 		this.pub_yn = pub;
