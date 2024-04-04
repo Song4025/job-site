@@ -86,51 +86,45 @@ public class CardController {
 	}
 
 	@RequestMapping("update")
-	public String update(String title, String userName, int age, String phone, String position, String url, boolean pub, boolean jobState, MultipartFile[] files) throws ClassNotFoundException, SQLException, IllegalStateException, IOException {
-		
-		if (files != null) {
-			for (MultipartFile file : files) {
+	public String update(String upTitle, String upUserName, Integer upAge, String upPhone, String upPosition, String upUrl, boolean upPub, boolean upJobState, MultipartFile[] upFiles) throws ClassNotFoundException, SQLException, IllegalStateException, IOException {
+		List<Files> updateFilesList = new ArrayList<>();
+		if (upFiles != null) {
+			for (MultipartFile file : upFiles) {
 				if(file.getSize() == 0L) {
 					continue;
 				}
+				//파일저장 로직
 				String fileName = file.getOriginalFilename();
 				long size = file.getSize();
 				System.out.printf("fileName: %s, fileSize: %d\n", fileName, size);
 				File savePath = new File(filePath);
+				
 				// 경로가 존재하지않으면 경로만들어주기
 				if (!savePath.exists())
 					savePath.mkdirs();
-
 				File saveFile = new File(filePath + File.separator + fileName);
-
 				file.transferTo(saveFile);
+				
+				Files fileObj = new Files();
+				fileObj.setContent_type(file.getContentType());
+	            fileObj.setUpdate_date(new Date());
+	            fileObj.setPath(filePath);
+	            updateFilesList.add(fileObj);
 			}
 		}
 		
 		// Card 객체 생성 및 값 설정
         Card card = new Card();
-        card.setTitle(title);
-        card.setUser_name(userName);
-        card.setAge(age);
-        card.setPhone(phone);
-        card.setPosition(position);
-        card.setUrl(url);
-        card.setPub_yn(pub);
-        card.setJob_state(jobState);
-        Files updateFiles = new Files();
-        if (files != null) {
-			for (MultipartFile file : files) {
-				if(file.getSize() == 0L) {
-					continue;
-				}
-				String fileName = file.getOriginalFilename();
-				updateFiles.setContent_type(fileName);
-				updateFiles.setUpdate_date(new Date());
-			}
-		}
-        
-        updateFiles.setPath(filePath);
-		service.update(card, updateFiles);
+        card.setTitle(upTitle);
+        card.setUser_name(upUserName);
+        card.setAge(upAge);
+        card.setPhone(upPhone);
+        card.setPosition(upPosition);
+        card.setUrl(upUrl);
+        card.setPub_yn(upPub);
+        card.setJob_state(upJobState);
+
+		service.update(card, updateFilesList);
 		
 		return "index";
 	}
