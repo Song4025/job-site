@@ -187,7 +187,7 @@ public class JDBCNoticeService implements CardService {
 	@Override
 	public int update(Card card, List<Files> filesList) throws ClassNotFoundException, SQLException {
 		String userName = card.getUser_name();
-		int age = card.getAge();
+		Integer age = card.getAge();
 		String phone = card.getPhone();
 		String position = card.getPosition();
 		boolean pubYnValue = card.isPub_yn();
