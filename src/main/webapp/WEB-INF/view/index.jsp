@@ -283,10 +283,9 @@
 
 	<!-- update modal -->
 	<c:forEach var="bc" items="${list}">
-		<div class="modal" id="updateModal_${bc.card_id}" tabindex="-1"
+		<div class="modal" id="${bc.card_id}" tabindex="-1"
 			aria-labelledby="exampleModalScrollableLabel" aria-hidden="true">
-			<div
-				class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+			<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
 				<div class="modal-content">
 					<div class="modal-header">
 						<h5 class="modal-title" id="exampleModalScrollableLabel">등록된
@@ -301,9 +300,10 @@
 					<div class="modal-body">
 						<!-- 모달 내용 -->
 						<form method="post" enctype="multipart/form-data" action="/update"
-							id="myCard_${status.index}">
+							id="myCard_${status.index}" >
 							<div class="row">
 								<div class="mb-3">
+									<input type="text" class="form-control" style="display:none;" id="upCardId" name="upCardId" value="${bc.card_id}">
 									<label for="title" class="form-label">타이틀</label> <input
 										type="text" class="form-control" id="upTitle" name="upTitle"
 										aria-describedby="upTitle" value="${bc.title}">
@@ -414,7 +414,7 @@
     	slides.forEach((slide) => {
 	    	slide.addEventListener('click', ()=>{
 	            const slideId = slide.getAttribute('data-slide-id');
-	            $('#updateModal_' + slideId).modal('show'); // 모달 표시
+	            $('#' + slideId).modal('show'); // 모달 표시
 	    	})
 	    });
 	});

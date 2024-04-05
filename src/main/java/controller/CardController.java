@@ -87,7 +87,7 @@ public class CardController {
 	}
 
 	@RequestMapping("update")
-	public String update(String upTitle, String upUserName, Integer upAge, String upPhone, String upPosition, String upUrl, boolean upPub, boolean upJobState, MultipartFile[] upFiles) throws ClassNotFoundException, SQLException, IllegalStateException, IOException {
+	public String update(String upCardId, String upTitle, String upUserName, Integer upAge, String upPhone, String upPosition, String upUrl, boolean upPub, boolean upJobState, MultipartFile[] upFiles) throws ClassNotFoundException, SQLException, IllegalStateException, IOException {
 		List<Files> updateFilesList = new ArrayList<>();
 		if (upFiles != null) {
 			for (MultipartFile file : upFiles) {
@@ -116,6 +116,7 @@ public class CardController {
 		
 		// Card 객체 생성 및 값 설정
         Card card = new Card();
+        card.setCard_id(upCardId);
         card.setTitle(upTitle);
         card.setUser_name(upUserName);
         card.setAge(upAge);
