@@ -4,24 +4,23 @@ import java.util.Date;
 
 public class Files {
 	
+	private String file_card_id;
 	private String file_id;
 	private String path;
 	private String content_type;
 	private Date update_date;
-	private int card_id;
-
-	public Files(String file_id, String path, String content_type, Date update_date, int card_id) {
-		this.file_id = file_id;
-		this.path = path;
-		this.content_type = content_type;
-		this.update_date = update_date;
-		this.card_id = card_id;
-	}
-
+	
 
 	public Files() {
 	}
 
+	public Files(String fileCardId, String fileId, String contentType, String path, Date updateDate) {
+		this.file_card_id = fileCardId; 
+		this.file_id = fileId;
+		this.content_type = contentType; 
+		this.path = path; 
+		this.update_date = updateDate;
+	}
 
 	public String getFile_id() {
 		return file_id;
@@ -55,12 +54,19 @@ public class Files {
 		this.update_date = update_date;
 	}
 
-	public int getCard_id() {
-		return card_id;
+	public String getFile_card_id() {
+		return file_card_id;
 	}
 
-	public void setCard_id(int card_id) {
-		this.card_id = card_id;
+	public void setFile_card_id(String file_card_id) {
+		this.file_card_id = file_card_id;
 	}
+
+	@Override
+	public String toString() {
+		return "Files [file_card_id=" + file_card_id + ", file_id=" + file_id + ", path=" + path + ", content_type="
+				+ content_type + ", update_date=" + update_date + "]";
+	}
+
 	
 }

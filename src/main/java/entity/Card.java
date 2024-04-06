@@ -3,7 +3,7 @@ package entity;
 import java.util.Date;
 
 public class Card {
-	
+
 	private String card_id;
 	private String user_name;
 	private Integer age ;
@@ -122,6 +122,11 @@ public class Card {
 		this.title = title;
 	}
 
-	
-	
+	@Override
+	public String toString() {
+		return "Card [card_id=" + card_id + ", user_name=" + user_name + ", age=" + age + ", phone=" + phone
+				+ ", position=" + position + ", pub_yn=" + pub_yn + ", job_state=" + job_state + ", url=" + url
+				+ ", reg_date=" + reg_date + ", hit=" + hit + ", title=" + title + "]";
+	}
+
 }

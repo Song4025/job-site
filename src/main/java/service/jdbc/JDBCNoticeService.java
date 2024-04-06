@@ -72,6 +72,36 @@ public class JDBCNoticeService implements CardService {
 
 		return list;
 	}
+	
+	public List<Files> getFilesList() throws ClassNotFoundException, SQLException {
+
+		String sql = "SELECT FILE_CARD_ID, FILE_ID, CONTENT_TYPE, PATH, UPDATE_DATE  FROM BUSINESS_CARD_VIEW";
+
+		// JDBC 드라이버 로드
+		Connection con = dataSource.getConnection();
+		PreparedStatement st = con.prepareStatement(sql);
+		ResultSet rs = st.executeQuery();
+
+		List<Files> getFilesList = new ArrayList<Files>();
+
+		while (rs.next()) {
+			String fileCardId = rs.getString("FILE_CARD_ID");
+			String fileId = rs.getString("FILE_ID");
+			String contentType = rs.getString("CONTENT_TYPE");
+			String path = rs.getString("PATH");
+			Date updateDate = rs.getDate("UPDATE_DATE");
+
+			Files files = new Files(fileCardId, fileId, contentType, path, updateDate);
+
+			getFilesList.add(files);
+		}
+
+		rs.close();
+		st.close();
+		con.close();
+
+		return getFilesList;
+	}
 
 	public int insert(Card card, List<Files> filesList) throws ClassNotFoundException, SQLException {
 		String userName = card.getUser_name();
@@ -240,7 +270,6 @@ public class JDBCNoticeService implements CardService {
 		// TODO Auto-generated method stub
 		return 0;
 	}
-	
 
 //	public int delete(Notice notice) throws ClassNotFoundException, SQLException {
 //

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import entity.Card;
+import entity.Files;
 import service.jdbc.JDBCNoticeService;
 
 @Controller
@@ -26,10 +27,12 @@ public class IndexController {
 	@RequestMapping("/index")
 	@GetMapping
     public ModelAndView list() throws ClassNotFoundException, SQLException {
-        List<Card> list = service.getList(1, "TITLE", "");
-        
+		
+        List<Card> cardList = service.getList(1, "TITLE", "");
+        List<Files> filesList = service.getFilesList();
         ModelAndView modelAndView = new ModelAndView("index");
-        modelAndView.addObject("list", list);
+        modelAndView.addObject("list", cardList);
+        modelAndView.addObject("filesList", filesList);
         
         return modelAndView;
     }

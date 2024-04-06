@@ -331,7 +331,8 @@
 								</div>
 								<div class="col">
 									<div id="aa" class="form-text"></div>
-									<label for="position" class="form-label">직업포지션</label> <input
+									<label for="position" class="form-label">직업포지션</label>
+									<input
 										type="text" class="form-control" id="upPosition"
 										name="upPosition" aria-describedby="upPosition"
 										value="${bc.position}">
@@ -340,9 +341,12 @@
 							<div class="row">
 								<div class="col">
 									<div id="aa" class="form-text"></div>
-									<label for="file" class="form-label">첨부파일</label> <input
-										type="file" class="form-control" id="upFiles" name="upFiles"
-										aria-describedby="upFiles" multiple>
+									<label for="file" class="form-label">첨부파일</label>
+									<c:forEach var="f" items="${filesList}">
+										<input
+										type="text" class="form-control" id="beforefile" name="beforefile"
+										aria-describedby="beforefile" multiple value="${f.content_type}">
+									</c:forEach>
 								</div>
 							</div>
 							<div class="row">
