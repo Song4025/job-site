@@ -343,9 +343,11 @@
 									<div id="aa" class="form-text"></div>
 									<label for="file" class="form-label">첨부파일</label>
 									<c:forEach var="f" items="${filesList}">
-										<input
-										type="text" class="form-control" id="beforefile" name="beforefile"
-										aria-describedby="beforefile" multiple value="${f.content_type}">
+										<c:if test="${f.file_card_id eq bc.card_id}">
+											<input
+											type="text" class="form-control" id="beforefile" name="beforefile"
+											aria-describedby="beforefile" multiple value="${f.content_type}">
+										</c:if>
 									</c:forEach>
 								</div>
 							</div>
