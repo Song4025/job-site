@@ -276,8 +276,8 @@ public class JDBCNoticeService implements CardService {
 	@Override
 	public int delete(Card card) throws ClassNotFoundException, SQLException {
 		int result = 0;
-		String bcSql = "DELETE FROM BUSINESS_CARD WHERE CARD_ID=?";
 		String fSql = "DELETE FROM FILES WHERE CARD_ID=?";
+		String bcSql = "DELETE FROM BUSINESS_CARD WHERE CARD_ID=?";
 		try (	Connection con = dataSource.getConnection();
 				PreparedStatement fileDel = con.prepareStatement(fSql);
 				PreparedStatement cardDel = con.prepareStatement(bcSql);) {
