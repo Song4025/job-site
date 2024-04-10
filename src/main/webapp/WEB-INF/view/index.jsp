@@ -300,7 +300,7 @@
 					<div class="modal-body">
 						<!-- 모달 내용 -->
 						<form method="post" enctype="multipart/form-data" action="/update"
-							id="myCard_${status.index}" >
+							id="myCard_${bc.card_id}" >
 							<div class="row">
 								<div class="mb-3">
 									<input type="text" class="form-control" style="display:none;" id="upCardId" name="upCardId" value="${bc.card_id}">
@@ -342,11 +342,17 @@
 								<div class="col">
 									<div id="aa" class="form-text"></div>
 									<label for="file" class="form-label">첨부파일</label>
+									<button class="btn btn-outline-secondary" type="button" id="addUpFile">추가</button>
 									<c:forEach var="f" items="${filesList}">
 										<c:if test="${f.file_card_id eq bc.card_id}">
-											<input
+											<%-- <input
 											type="text" class="form-control" id="beforefile" name="beforefile"
-											aria-describedby="beforefile" multiple value="${f.content_type}">
+											aria-describedby="beforefile" multiple value="${f.content_type}"> --%>
+											<div class="input-group mb-3">
+						                        <input type="text" class="form-control" id="beforefile" name="beforefile"
+						                            aria-describedby="beforefile" readonly value="${f.content_type}">
+						                        <button class="btn btn-outline-secondary" type="button" id="fileRemove">삭제</button>
+						                    </div>
 										</c:if>
 									</c:forEach>
 								</div>
@@ -372,8 +378,8 @@
 								</div>
 							</div>
 							<div class="modal-footer">
-								<button type="button" class="btn btn-secondary"
-									data-bs-dismiss="modal">삭제</button>
+								<button type="submit" id="btnDel" class="btn btn-secondary"
+									data-bs-dismiss="modal" data-card-id="${bc.card_id}" >삭제</button>
 								<button type="submit" class="btn btn-primary">수정</button>
 							</div>
 						</form>
@@ -415,7 +421,7 @@
 		      clickable: true,
 		    },
 		});
-		// 슬라이드 클릭시 비동기 통신 발생
+		// 슬라이드 클릭시 모달 오픈
 	    const slides = document.querySelectorAll('.swiper-slide');
     	slides.forEach((slide) => {
 	    	slide.addEventListener('click', ()=>{
@@ -423,6 +429,23 @@
 	            $('#' + slideId).modal('show'); // 모달 표시
 	    	})
 	    });
+    	// 모달 파일 삭제
+    	const fileRemovebtns = document.querySelectorAll('#fileRemove');
+    	const beforefile = document.querySelectorAll('#beforefile');
+    	fileRemovebtns.forEach(button => {
+    	    button.addEventListener('click', () => {
+    	    	const parentElement = button.parentNode; 
+    	        parentElement.parentNode.removeChild(parentElement); 
+    	    });
+    	});
+    	//모달 카드삭제
+    	const submitDel = document.querySelector('#btnDel');
+    	submitDel.addEventListener('click', (e) => {
+    		const cardId = event.target.getAttribute('data-card-id');
+    		console.log(cardId);
+    		document.getElementById('myCard_' + cardId).action = '/delete';
+	    });
+    		
 	});
 	</script>
 

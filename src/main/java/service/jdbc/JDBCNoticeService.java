@@ -232,27 +232,35 @@ public class JDBCNoticeService implements CardService {
 
 			result = cardAffectedRows;
 			
-			
 			if (filesList != null) {
+
+				// 기존파일 정보 삭제
+				String delFilesSql = "DELETE FILES WHERE FILE_ID=?";
+				try (PreparedStatement filesSt = con.prepareStatement(delFilesSql);) {
+					filesSt.setString(1, card.getCard_id());
+					int filesAffectedRows = filesSt.executeUpdate();
+					if (filesAffectedRows == 0) {
+						throw new SQLException("기존 파일정보 삭제 실패");
+					} else {
+						System.out.println("기존 파일정보 삭제 성공");
+					}
+				}
+				
 				// 파일 정보 삽입
-				String filesSql = "UPDATE FILES SET PATH=?, CONTENT_TYPE=?, UPDATE_DATE=? WHERE FILE_ID=? ";
-				try (PreparedStatement filesSt = con.prepareStatement(filesSql);) {
-					for(Files file : filesList) {
-						String path = file.getPath();
-						String contentType = file.getContent_type();
-						Date updateDate = file.getUpdate_date();
-						
-						filesSt.setString(1, path);
-						filesSt.setString(2, contentType);
-						filesSt.setDate(3, new java.sql.Date(updateDate.getTime()));
-						filesSt.setString(4, file.getFile_id());
-						
+				String filesSql = "INSERT INTO FILES (FILE_ID, PATH, CONTENT_TYPE, UPDATE_DATE, CARD_ID)"
+						+ " VALUES (file_seq.nextval, ?, ?, ?, ?)";
+				
+				for(Files files : filesList) {
+					try (PreparedStatement filesSt = con.prepareStatement(filesSql);) {
+						filesSt.setString(1, files.getPath());
+		                filesSt.setString(2, files.getContent_type());
+		                filesSt.setDate(3, new java.sql.Date(files.getUpdate_date().getTime()));
+		                filesSt.setString(4, cardId); // 카드 ID를 가져와서 파일과 카드를 연결
 						int filesAffectedRows = filesSt.executeUpdate();
-						
 						if (filesAffectedRows == 0) {
-							throw new SQLException("파일 정보 업데이트에 실패했습니다.");
+							throw new SQLException("파일 정보 삽입에 실패했습니다.");
 						} else {
-							System.out.println("파일 정보 업데이트 성공");
+							System.out.println("파일 정보 삽입 성공");
 						}
 					}
 				}
@@ -266,9 +274,32 @@ public class JDBCNoticeService implements CardService {
 	}
 
 	@Override
-	public int delete(Card id) throws ClassNotFoundException, SQLException {
-		// TODO Auto-generated method stub
-		return 0;
+	public int delete(Card card) throws ClassNotFoundException, SQLException {
+		int result = 0;
+		String bcSql = "DELETE FROM BUSINESS_CARD WHERE CARD_ID=?";
+		String fSql = "DELETE FROM FILES WHERE CARD_ID=?";
+		try (	Connection con = dataSource.getConnection();
+				PreparedStatement fileDel = con.prepareStatement(fSql);
+				PreparedStatement cardDel = con.prepareStatement(bcSql);) {
+			fileDel.setString(1, card.getCard_id());			
+			int filesAffectedRows = fileDel.executeUpdate();
+			if (filesAffectedRows == 0) {
+				throw new SQLException("파일정보 삭제 실패");
+			} else {
+				System.out.println("파일정보 삭제 성공");
+			}
+			cardDel.setString(1, card.getCard_id());
+			int cardAffectedRows = cardDel.executeUpdate();
+			if (cardAffectedRows == 0) {
+				throw new SQLException("카드정보 삭제 실패");
+			} else {
+				System.out.println("카드정보 삭제 성공");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.err.println("카드 삭제 중 오류가 발생했습니다: " + e.getMessage());
+		}
+		return result;
 	}
 
 //	public int delete(Notice notice) throws ClassNotFoundException, SQLException {

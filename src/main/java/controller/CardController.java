@@ -131,9 +131,17 @@ public class CardController {
 		return "index";
 	}
 
-	@RequestMapping("del")
-	public String del() {
-		return "/";
+	@RequestMapping("delete")
+	public String delete(String upCardId) throws ClassNotFoundException, SQLException {
+		Card card = new Card();
+        card.setCard_id(upCardId);
+		if (card.getCard_id() == null) {
+			System.out.println("cardId 값이 null로 들어왔습니다.");
+	    } else {
+	        System.out.println(card.getCard_id());
+	        service.delete(card);
+	    }
+		return "index";
 	}
 
 }
