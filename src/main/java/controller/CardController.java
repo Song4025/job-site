@@ -31,7 +31,7 @@ public class CardController {
 	}
 
 	@PostMapping("/reg")
-	public String reg(String title, String userName, int age,
+	public synchronized String reg(String title, String userName, int age,
 		 String phone, String position, String url, boolean pub, boolean jobState, MultipartFile[] files) throws IllegalStateException, IOException, ClassNotFoundException, SQLException {
 
 		if (files != null) {
@@ -73,21 +73,23 @@ public class CardController {
 				if(file.getSize() == 0L) {
 					continue;
 				}
+				long size = file.getSize();
 				String fileName = file.getOriginalFilename();
 				Files insertFiles = new Files();
 				insertFiles.setContent_type(fileName);
 				insertFiles.setPath(filePath);
 				insertFiles.setUpdate_date(new Date());
+				insertFiles.setFile_size(size);
 				insertFilesList.add(insertFiles);
 			}
         }
         
 		service.insert(card, insertFilesList);
-		return "index";
+		return "redirect:/index";
 	}
 
 	@RequestMapping("update")
-	public String update(String upCardId, String upTitle, String upUserName, Integer upAge, String upPhone, String upPosition, String upUrl, boolean upPub, boolean upJobState, MultipartFile[] upFiles) throws ClassNotFoundException, SQLException, IllegalStateException, IOException {
+	public synchronized String update(String upCardId, String upTitle, String upUserName, Integer upAge, String upPhone, String upPosition, String upUrl, boolean upPub, boolean upJobState, MultipartFile[] upFiles) throws ClassNotFoundException, SQLException, IllegalStateException, IOException {
 		List<Files> updateFilesList = new ArrayList<>();
 		if (upFiles != null) {
 			for (MultipartFile file : upFiles) {
@@ -110,6 +112,7 @@ public class CardController {
 				fileObj.setContent_type(file.getContentType());
 	            fileObj.setUpdate_date(new Date());
 	            fileObj.setPath(filePath);
+	            fileObj.setFile_size(size);
 	            updateFilesList.add(fileObj);
 			}
 		}
@@ -128,20 +131,16 @@ public class CardController {
 
 		service.update(card, updateFilesList);
 		
-		return "index";
+		return "redirect:/index";
 	}
 
 	@RequestMapping("delete")
-	public String delete(String upCardId) throws ClassNotFoundException, SQLException {
+	public synchronized String delete(String upCardId) throws ClassNotFoundException, SQLException {
 		Card card = new Card();
         card.setCard_id(upCardId);
-		if (card.getCard_id() == null) {
-			System.out.println("cardId 값이 null로 들어왔습니다.");
-	    } else {
-	        System.out.println(card.getCard_id());
-	        service.delete(card);
-	    }
-		return "index";
+        service.delete(card);
+
+        return "redirect:/index";
 	}
 
 }

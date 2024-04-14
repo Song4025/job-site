@@ -75,7 +75,7 @@ public class JDBCNoticeService implements CardService {
 	
 	public List<Files> getFilesList() throws ClassNotFoundException, SQLException {
 
-		String sql = "SELECT FILE_CARD_ID, FILE_ID, CONTENT_TYPE, PATH, UPDATE_DATE  FROM BUSINESS_CARD_VIEW";
+		String sql = "SELECT FILE_CARD_ID, FILE_ID, CONTENT_TYPE, PATH, UPDATE_DATE, FILE_SIZE  FROM BUSINESS_CARD_VIEW";
 
 		// JDBC 드라이버 로드
 		Connection con = dataSource.getConnection();
@@ -90,8 +90,9 @@ public class JDBCNoticeService implements CardService {
 			String contentType = rs.getString("CONTENT_TYPE");
 			String path = rs.getString("PATH");
 			Date updateDate = rs.getDate("UPDATE_DATE");
+			long size = rs.getLong("FILE_SIZE");
 
-			Files files = new Files(fileCardId, fileId, contentType, path, updateDate);
+			Files files = new Files(fileCardId, fileId, contentType, path, updateDate, size);
 
 			getFilesList.add(files);
 		}
@@ -157,7 +158,7 @@ public class JDBCNoticeService implements CardService {
 			result = cardAffectedRows;
 			
 			// 파일 정보 삽입
-			String filesSql = "INSERT INTO FILES (FILE_ID, PATH, CONTENT_TYPE, UPDATE_DATE, CARD_ID)"
+			String filesSql = "INSERT INTO FILES (FILE_ID, PATH, CONTENT_TYPE, UPDATE_DATE, CARD_ID, FILE_SIZE)"
 					+ " VALUES (file_seq.nextval, ?, ?, ?, ?)";
 			
 			for(Files files : filesList) {
@@ -168,6 +169,7 @@ public class JDBCNoticeService implements CardService {
 		                filesSt.setString(2, files.getContent_type());
 		                filesSt.setDate(3, new java.sql.Date(files.getUpdate_date().getTime()));
 		                filesSt.setString(4, cardId); // 카드 ID를 가져와서 파일과 카드를 연결
+		                filesSt.setLong(5, files.getFile_size());
 						int filesAffectedRows = filesSt.executeUpdate();
 						if (filesAffectedRows == 0) {
 							throw new SQLException("파일 정보 삽입에 실패했습니다.");
@@ -198,6 +200,7 @@ public class JDBCNoticeService implements CardService {
 		String title = card.getTitle();
 		String url = card.getUrl();
 		String cardId = card.getCard_id();
+		
 		int result = 0;
 		
 		// 카드 정보 삽입
@@ -232,45 +235,71 @@ public class JDBCNoticeService implements CardService {
 
 			result = cardAffectedRows;
 			
-			if (filesList != null) {
-
-				// 기존파일 정보 삭제
-				String delFilesSql = "DELETE FILES WHERE FILE_ID=?";
-				try (PreparedStatement filesSt = con.prepareStatement(delFilesSql);) {
-					filesSt.setString(1, card.getCard_id());
-					int filesAffectedRows = filesSt.executeUpdate();
-					if (filesAffectedRows == 0) {
-						throw new SQLException("기존 파일정보 삭제 실패");
-					} else {
-						System.out.println("기존 파일정보 삭제 성공");
-					}
-				}
-				
-				// 파일 정보 삽입
-				String filesSql = "INSERT INTO FILES (FILE_ID, PATH, CONTENT_TYPE, UPDATE_DATE, CARD_ID)"
-						+ " VALUES (file_seq.nextval, ?, ?, ?, ?)";
-				
-				for(Files files : filesList) {
-					try (PreparedStatement filesSt = con.prepareStatement(filesSql);) {
-						filesSt.setString(1, files.getPath());
-		                filesSt.setString(2, files.getContent_type());
-		                filesSt.setDate(3, new java.sql.Date(files.getUpdate_date().getTime()));
-		                filesSt.setString(4, cardId); // 카드 ID를 가져와서 파일과 카드를 연결
-						int filesAffectedRows = filesSt.executeUpdate();
-						if (filesAffectedRows == 0) {
-							throw new SQLException("파일 정보 삽입에 실패했습니다.");
-						} else {
-							System.out.println("파일 정보 삽입 성공");
-						}
-					}
-				}
-			}
+			// 기존파일정보
+			String beforeFilesSql = "SELECT * FROM FILES WHERE CARD_ID =?";
 			
+			for(Files files : filesList) {
+			    try (PreparedStatement beforeFilesSt = con.prepareStatement(beforeFilesSql);) {
+			        beforeFilesSt.setString(1, cardId);
+			        try (ResultSet rs = beforeFilesSt.executeQuery()) {
+			            while (rs.next()) {
+			                Files existingFile = new Files();
+			                existingFile.setFile_id(rs.getString("FILE_ID"));
+			                existingFile.setPath(rs.getString("PATH"));
+			                existingFile.setContent_type(rs.getString("CONTENT_TYPE"));
+			                existingFile.setUpdate_date(rs.getDate("UPDATE_DATE"));
+			                existingFile.setFile_card_id(rs.getString("CARD_ID"));
+			                existingFile.setFile_size(rs.getLong("FILE_SIZE"));
+			                
+			                // 파일 크기가 다르면 삭제 후 새 파일 추가
+			                if (existingFile.getFile_size() != files.getFile_size()) {
+			                    // 파일 삭제
+			                    deleteFile(con, existingFile.getFile_id());
+			                    // 새 파일 추가
+			                    insertFile(con, files);
+			                }
+			            }
+			        }
+			    } catch (SQLException e) {
+			        e.printStackTrace();
+			        throw new SQLException("파일정보 비교 중 오류가 발생했습니다.", e);
+			    }
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 			System.err.println("카드 정보 업데이트 중 오류가 발생했습니다: " + e.getMessage());
 		}
 		return result;
+	}
+
+	private void deleteFile(Connection con, String fileId) throws SQLException {
+	    String deleteFileSql = "DELETE FROM FILES WHERE FILE_ID = ?";
+	    try (PreparedStatement deleteFileSt = con.prepareStatement(deleteFileSql);) {
+	        deleteFileSt.setString(1, fileId);
+	        int deletedRows = deleteFileSt.executeUpdate();
+	        if (deletedRows == 0) {
+	            throw new SQLException("파일 삭제에 실패했습니다.");
+	        } else {
+	            System.out.println("파일이 성공적으로 삭제되었습니다.");
+	        }
+	    }
+	}
+	
+	private void insertFile(Connection con, Files files) throws SQLException {
+	    String insertFileSql = "INSERT INTO FILES (FILE_ID, PATH, CONTENT_TYPE, UPDATE_DATE, CARD_ID, FILE_SIZE)  VALUES (file_seq.nextval, ?, ?, ?, ?, ?)";
+	    try (PreparedStatement insertFileSt = con.prepareStatement(insertFileSql);) {
+	        insertFileSt.setString(1, files.getPath());
+	        insertFileSt.setString(2, files.getContent_type());
+	        insertFileSt.setDate(3, new java.sql.Date(files.getUpdate_date().getTime()));
+	        insertFileSt.setString(4, files.getFile_card_id());
+	        insertFileSt.setLong(5, files.getFile_size());
+	        int insertedRows = insertFileSt.executeUpdate();
+	        if (insertedRows == 0) {
+	            throw new SQLException("파일 추가에 실패했습니다.");
+	        } else {
+	            System.out.println("파일이 성공적으로 추가되었습니다.");
+	        }
+	    }
 	}
 
 	@Override
@@ -301,22 +330,5 @@ public class JDBCNoticeService implements CardService {
 		}
 		return result;
 	}
-
-//	public int delete(Notice notice) throws ClassNotFoundException, SQLException {
-//
-//		String id = notice.getId();
-//		String sql = "DELETE NOTICE WHERE ID=?";
-//
-//		Connection con = dataSource.getConnection();
-//		PreparedStatement st = con.prepareStatement(sql);
-//		st.setString(1, id);
-//
-//		int result = st.executeUpdate();
-//
-//		st.close();
-//		con.close();
-//
-//		return result;
-//	}
 
 }

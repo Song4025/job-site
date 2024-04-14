@@ -9,17 +9,18 @@ public class Files {
 	private String path;
 	private String content_type;
 	private Date update_date;
-	
+	private long file_size;
 
 	public Files() {
 	}
 
-	public Files(String fileCardId, String fileId, String contentType, String path, Date updateDate) {
+	public Files(String fileCardId, String fileId, String contentType, String path, Date updateDate, long fileSize) {
 		this.file_card_id = fileCardId; 
 		this.file_id = fileId;
 		this.content_type = contentType; 
 		this.path = path; 
 		this.update_date = updateDate;
+		this.file_size = fileSize;
 	}
 
 	public String getFile_id() {
@@ -62,11 +63,18 @@ public class Files {
 		this.file_card_id = file_card_id;
 	}
 
+	public long getFile_size() {
+		return file_size;
+	}
+
+	public void setFile_size(long size) {
+		this.file_size = size;
+	}
+
 	@Override
 	public String toString() {
 		return "Files [file_card_id=" + file_card_id + ", file_id=" + file_id + ", path=" + path + ", content_type="
-				+ content_type + ", update_date=" + update_date + "]";
+				+ content_type + ", update_date=" + update_date + ", file_size=" + file_size + "]";
 	}
-
 	
 }

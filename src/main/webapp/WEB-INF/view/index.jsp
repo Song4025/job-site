@@ -348,10 +348,10 @@
 											<%-- <input
 											type="text" class="form-control" id="beforefile" name="beforefile"
 											aria-describedby="beforefile" multiple value="${f.content_type}"> --%>
-											<div class="input-group mb-3">
+											<div class="input-group mb-3" id="fileInputContainer">
 						                        <input type="text" class="form-control" id="beforefile" name="beforefile"
 						                            aria-describedby="beforefile" readonly value="${f.content_type}">
-						                        <button class="btn btn-outline-secondary" type="button" id="fileRemove">삭제</button>
+						                        <button class="btn btn-outline-secondary" type="button" id="fileRemove" data-file-id="${f.file_id }">삭제</button>
 						                    </div>
 										</c:if>
 									</c:forEach>
@@ -380,7 +380,7 @@
 							<div class="modal-footer">
 								<button type="submit" id="btnDel" class="btn btn-secondary"
 									data-bs-dismiss="modal" data-card-id="${bc.card_id}" >삭제</button>
-								<button type="submit" class="btn btn-primary">수정</button>
+								<button type="submit" id="btnUpdate" class="btn btn-primary">수정</button>
 							</div>
 						</form>
 					</div>
@@ -429,20 +429,58 @@
 	            $('#' + slideId).modal('show'); // 모달 표시
 	    	})
 	    });
-    	// 모달 파일 삭제
+    	// 수정하기 파일추가
+    	const fileAddBtn = document.querySelector('#addUpFile');
+   		fileAddBtn.addEventListener('click', () => {
+   			// 새로운 input 요소 생성
+   	        const newFileInput = document.createElement('input');
+   	     	const fileInputContainer = document.getElementById('fileInputContainer');
+   	  		// 입력란 생성
+   	        newFileInput.type = 'file'; // 파일 입력 필드로 설정
+   	        newFileInput.name = 'upFiles'; // 서버로 전송될 이름
+   	        newFileInput.multiple = true; // 다중 파일 선택 가능
+   	     	newFileInput.class='form-control'; //클래스명 설정
+
+   	        // 생성된 input 요소를 컨테이너에 추가
+   	        fileInputContainer.appendChild(newFileInput);
+   	  		// 추가 버튼 비활성화
+   	        fileAddBtn.disabled = true;
+   	    });
+   		
+   		// 삭제할 파일 정보를 담을 배열
+        const filesToDelete = [];
+   		
+     	// 파일 삭제 화면처리
     	const fileRemovebtns = document.querySelectorAll('#fileRemove');
     	const beforefile = document.querySelectorAll('#beforefile');
     	fileRemovebtns.forEach(button => {
     	    button.addEventListener('click', () => {
     	    	const parentElement = button.parentNode; 
-    	        parentElement.parentNode.removeChild(parentElement); 
+    	        parentElement.parentNode.removeChild(parentElement);
+    	        const fileId = button.getAttribute('data-file-id'); // 삭제할 파일의 ID 저장
+                filesToDelete.push(fileId); // 삭제할 파일 정보를 배열에 추가
     	    });
     	});
-    	//모달 카드삭제
+
+        // 명함 수정 폼 제출 전 처리
+        const submitUpdate = document.querySelector('#btnUpdate');
+        submitUpdate.addEventListener('click', () => {
+            // 수정하기 버튼을 클릭했을 때 삭제할 파일 정보를 숨겨진 입력 필드에 추가하여 서버로 전송합니다.
+            const form = submitUpdate.closest('form'); // 수정하기 버튼이 속한 폼을 가져옵니다.
+            filesToDelete.forEach(fileId => {
+                const hiddenInput = document.createElement('input');
+                hiddenInput.type = 'hidden';
+                hiddenInput.name = 'filesToDelete';
+                hiddenInput.value = fileId;
+                form.appendChild(hiddenInput);
+            });
+        });
+   		
+    	
+    	// 카드삭제
     	const submitDel = document.querySelector('#btnDel');
     	submitDel.addEventListener('click', (e) => {
     		const cardId = event.target.getAttribute('data-card-id');
-    		console.log(cardId);
     		document.getElementById('myCard_' + cardId).action = '/delete';
 	    });
     		
