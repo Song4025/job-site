@@ -89,7 +89,7 @@ public class CardController {
 	}
 
 	@RequestMapping("update")
-	public synchronized String update(String upCardId, String upTitle, String upUserName, Integer upAge, String upPhone, String upPosition, String upUrl, boolean upPub, boolean upJobState, MultipartFile[] upFiles) throws ClassNotFoundException, SQLException, IllegalStateException, IOException {
+	public synchronized String update(String upCardId, String upTitle, String upUserName, Integer upAge, String upPhone, String upPosition, String upUrl, boolean upPub, boolean upJobState, MultipartFile[] upFiles, String[] filesToDelete) throws ClassNotFoundException, SQLException, IllegalStateException, IOException {
 		List<Files> updateFilesList = new ArrayList<>();
 		if (upFiles != null) {
 			for (MultipartFile file : upFiles) {
@@ -116,6 +116,14 @@ public class CardController {
 	            updateFilesList.add(fileObj);
 			}
 		}
+		
+		// 파일 삭제 로직 추가
+	    if (filesToDelete != null) {
+	        for (String fileId : filesToDelete) {
+	            // 파일 삭제
+	            service.deleteFile(fileId); // 파일 삭제를 처리하는 메서드 호출
+	        }
+	    }
 		
 		// Card 객체 생성 및 값 설정
         Card card = new Card();

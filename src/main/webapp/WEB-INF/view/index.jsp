@@ -475,7 +475,6 @@
                 form.appendChild(hiddenInput);
             });
         });
-   		
     	
     	// 카드삭제
     	const submitDel = document.querySelector('#btnDel');
